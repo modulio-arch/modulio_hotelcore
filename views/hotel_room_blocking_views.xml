@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Hotel Room Blocking List View -->
+        <record id="view_hotel_room_blocking_list" model="ir.ui.view">
+            <field name="name">hotel.room.blocking.list</field>
+            <field name="model">hotel.room.blocking</field>
+            <field name="arch" type="xml">
+                <list string="Room Blockings" decoration-info="status == 'planned'" decoration-success="status == 'active'" decoration-muted="status == 'completed'" decoration-danger="status == 'cancelled'">
+                    <field name="name"/>
+                    <field name="room_id"/>
+                    <field name="room_number"/>
+                    <field name="room_type_id"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="duration_days"/>
+                    <field name="blocking_type"/>
+                    <field name="status" widget="badge" decoration-info="status == 'planned'" decoration-success="status == 'active'" decoration-muted="status == 'completed'" decoration-danger="status == 'cancelled'"/>
+                    <field name="responsible_user_id"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Hotel Room Blocking Form View -->
+        <record id="view_hotel_room_blocking_form" model="ir.ui.view">
+            <field name="name">hotel.room.blocking.form</field>
+            <field name="model">hotel.room.blocking</field>
+            <field name="arch" type="xml">
+                <form string="Room Blocking">
+                    <header>
+                        <button name="action_activate" string="Activate" type="object" class="btn-primary" 
+                                invisible="status != 'planned'"/>
+                        <button name="action_complete" string="Complete" type="object" class="btn-success" 
+                                invisible="status != 'active'"/>
+                        <button name="action_cancel" string="Cancel" type="object" class="btn-danger" 
+                                invisible="status in ['completed', 'cancelled']"/>
+                        <field name="status" widget="statusbar" statusbar_visible="planned,active,completed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Blocking Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="room_id" options="{'no_create': True}"/>
+                                <field name="room_number" readonly="1"/>
+                                <field name="room_type_id" readonly="1"/>
+                                <field name="blocking_type"/>
+                            </group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="duration_days" readonly="1"/>
+                                <field name="responsible_user_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="reason" placeholder="Reason for blocking..."/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Hotel Room Blocking Search View -->
+        <record id="view_hotel_room_blocking_search" model="ir.ui.view">
+            <field name="name">hotel.room.blocking.search</field>
+            <field name="model">hotel.room.blocking</field>
+            <field name="arch" type="xml">
+                <search string="Room Blockings">
+                    <field name="name"/>
+                    <field name="room_id"/>
+                    <field name="room_number"/>
+                    <field name="room_type_id"/>
+                    <separator/>
+                    <filter string="Planned" name="planned" domain="[('status', '=', 'planned')]"/>
+                    <filter string="Active" name="active" domain="[('status', '=', 'active')]"/>
+                    <filter string="Completed" name="completed" domain="[('status', '=', 'completed')]"/>
+                    <filter string="Cancelled" name="cancelled" domain="[('status', '=', 'cancelled')]"/>
+                    <separator/>
+                    <filter string="Maintenance" name="maintenance" domain="[('blocking_type', '=', 'maintenance')]"/>
+                    <filter string="Event" name="event" domain="[('blocking_type', '=', 'event')]"/>
+                    <filter string="Out of Order" name="out_of_order" domain="[('blocking_type', '=', 'out_of_order')]"/>
+                    <separator/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Room" name="group_room" context="{'group_by': 'room_id'}"/>
+                        <filter string="Room Type" name="group_room_type" context="{'group_by': 'room_type_id'}"/>
+                        <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                        <filter string="Blocking Type" name="group_blocking_type" context="{'group_by': 'blocking_type'}"/>
+                        <filter string="Blocking Responsible" name="group_responsible" context="{'group_by': 'responsible_user_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Hotel Room Blocking Calendar View -->
+        <record id="view_hotel_room_blocking_calendar" model="ir.ui.view">
+            <field name="name">hotel.room.blocking.calendar</field>
+            <field name="model">hotel.room.blocking</field>
+            <field name="arch" type="xml">
+                <calendar string="Room Blockings Calendar" date_start="start_datetime" date_stop="end_datetime" color="blocking_type">
+                    <field name="name"/>
+                    <field name="room_id"/>
+                    <field name="room_number"/>
+                    <field name="blocking_type"/>
+                    <field name="status"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Hotel Room Blocking Action -->
+        <record id="action_hotel_room_blocking_act_window" model="ir.actions.act_window">
+            <field name="name">Room Blockings</field>
+            <field name="res_model">hotel.room.blocking</field>
+            <field name="view_mode">list,calendar,form</field>
+            <field name="search_view_id" ref="view_hotel_room_blocking_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first room blocking!
+                </p>
+                <p>
+                    Room blockings are used to reserve rooms for maintenance, events, or other purposes.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

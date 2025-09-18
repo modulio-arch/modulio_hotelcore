@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Hotel Core - Sistem Manajemen Hotel Dasar</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .feature-box {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .feature-box h3 {
+            color: #667eea;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .benefit-list {
+            list-style: none;
+            padding: 0;
+        }
+        .benefit-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .benefit-list li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .highlight {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .status-flow {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .status-flow h4 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        .status-item {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        .arrow {
+            color: #667eea;
+            font-size: 1.2em;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Hotel Core</h1>
+        <p>Sistem Manajemen Hotel Dasar untuk Odoo</p>
+    </div>
+
+    <div class="highlight">
+        <h3>🏨 Apa itu Hotel Core?</h3>
+        <p>Hotel Core adalah modul dasar yang menyediakan fondasi untuk mengelola hotel Anda. Seperti fondasi rumah, modul ini harus ada sebelum Anda bisa menggunakan fitur-fitur hotel lainnya seperti sistem reservasi, housekeeping, atau penagihan.</p>
+    </div>
+
+    <div class="feature-box">
+        <h3>📋 Manajemen Jenis Kamar</h3>
+        <p>Atur berbagai jenis kamar di hotel Anda dengan mudah:</p>
+        <ul class="benefit-list">
+            <li>Buat kategori kamar (Standard, Deluxe, Suite, dll)</li>
+            <li>Tentukan kapasitas maksimal tamu per kamar</li>
+            <li>Set harga dasar untuk setiap jenis kamar</li>
+            <li>Catat fasilitas yang tersedia (AC, WiFi, TV, dll)</li>
+            <li>Atur ukuran kamar dalam meter persegi</li>
+        </ul>
+    </div>
+
+    <div class="feature-box">
+        <h3>🏠 Manajemen Kamar Individual</h3>
+        <p>Kelola setiap kamar di hotel Anda secara detail:</p>
+        <ul class="benefit-list">
+            <li>Buat daftar semua kamar dengan nomor dan lantai</li>
+            <li>Kaitkan setiap kamar dengan jenis kamar yang sesuai</li>
+            <li>Lacak status kamar secara real-time</li>
+            <li>Catat catatan khusus untuk setiap kamar</li>
+            <li>Flag kamar yang memerlukan perbaikan</li>
+        </ul>
+    </div>
+
+    <div class="feature-box">
+        <h3>🔄 Sistem Status Kamar</h3>
+        <p>Pantau status setiap kamar dengan sistem yang terorganisir:</p>
+        <div class="status-flow">
+            <h4>Alur Status Kamar:</h4>
+            <span class="status-item">Kosong & Siap</span>
+            <span class="arrow">→</span>
+            <span class="status-item">Dipesan</span>
+            <span class="arrow">→</span>
+            <span class="status-item">Terisi</span>
+            <span class="arrow">→</span>
+            <span class="status-item">Kotor</span>
+            <span class="arrow">→</span>
+            <span class="status-item">Diperiksa</span>
+            <span class="arrow">→</span>
+            <span class="status-item">Kosong & Siap</span>
+        </div>
+        <ul class="benefit-list">
+            <li>Status "Tidak Beroperasi" untuk kamar yang sedang diperbaiki</li>
+            <li>Catat waktu dan alasan setiap perubahan status</li>
+            <li>Validasi otomatis untuk memastikan alur yang benar</li>
+        </ul>
+    </div>
+
+    <div class="feature-box">
+        <h3>👥 Manajemen Akses Staf</h3>
+        <p>Atur siapa yang bisa mengakses apa di sistem hotel Anda:</p>
+        <ul class="benefit-list">
+            <li><strong>Staf Hotel:</strong> Bisa melihat dan mengubah status kamar, tidak bisa membuat kamar baru</li>
+            <li><strong>Manajer Hotel:</strong> Akses penuh untuk mengelola semua aspek hotel</li>
+            <li>Setiap perubahan dicatat untuk audit dan keamanan</li>
+        </ul>
+    </div>
+
+    <div class="feature-box">
+        <h3>💬 Komunikasi Internal</h3>
+        <p>Fasilitas komunikasi untuk tim hotel Anda:</p>
+        <ul class="benefit-list">
+            <li>Kirim pesan internal terkait kamar atau jenis kamar</li>
+            <li>Buat tugas dan follow-up untuk maintenance</li>
+            <li>Lacak semua perubahan data secara otomatis</li>
+            <li>Riwayat lengkap untuk referensi masa depan</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <h3>🚀 Mengapa Hotel Core Penting?</h3>
+        <p>Hotel Core adalah <strong>modul wajib</strong> yang harus diinstall sebelum modul hotel lainnya seperti:</p>
+        <ul class="benefit-list">
+            <li>Sistem Reservasi - untuk booking kamar</li>
+            <li>Housekeeping - untuk manajemen cleaning</li>
+            <li>Front Office - untuk check-in/check-out</li>
+            <li>Sistem Penagihan - untuk billing tamu</li>
+        </ul>
+        <p>Tanpa Hotel Core, modul-modul tersebut tidak bisa berfungsi karena mereka membutuhkan data kamar dan jenis kamar yang didefinisikan di sini.</p>
+    </div>
+
+    <div class="feature-box">
+        <h3>📊 Dashboard & Laporan</h3>
+        <p>Pantau operasional hotel Anda dengan mudah:</p>
+        <ul class="benefit-list">
+            <li>Dashboard utama menampilkan status semua kamar</li>
+            <li>Filter kamar berdasarkan status, lantai, atau jenis</li>
+            <li>Laporan jumlah kamar per jenis</li>
+            <li>Tracking maintenance dan perbaikan</li>
+        </ul>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; padding: 20px; background: #e8f5e8; border-radius: 8px;">
+        <h3 style="color: #2e7d32; margin-top: 0;">Siap Memulai?</h3>
+        <p>Hotel Core memberikan fondasi yang kuat untuk mengelola hotel Anda. Install modul ini terlebih dahulu, lalu tambahkan modul hotel lainnya sesuai kebutuhan bisnis Anda.</p>
+        <p><strong>Dikembangkan oleh Modulio</strong> - Solusi Hotel Management untuk Odoo</p>
+    </div>
+</body>
+</html>

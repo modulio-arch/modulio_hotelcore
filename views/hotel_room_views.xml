@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Hotel Room List View -->
+        <record id="view_hotel_room_list" model="ir.ui.view">
+            <field name="name">hotel.room.list</field>
+            <field name="model">hotel.room</field>
+            <field name="arch" type="xml">
+                <list string="Rooms">
+                    <field name="room_number"/>
+                    <field name="floor"/>
+                    <field name="room_type_id"/>
+                    <field name="occupancy_state" widget="badge"/>
+                    <field name="housekeeping_state" widget="badge"/>
+                    <field name="max_occupancy"/>
+                    <field name="maintenance_required" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Hotel Room Form View -->
+        <record id="view_hotel_room_form" model="ir.ui.view">
+            <field name="name">hotel.room.form</field>
+            <field name="model">hotel.room</field>
+            <field name="arch" type="xml">
+                <form string="Room">
+                    <header>
+                        <button name="action_reserve" string="Reserve" type="object" class="btn-info"/>
+                        <button name="action_check_in" string="Check In" type="object" class="btn-success"/>
+                        <button name="action_check_out" string="Check Out" type="object" class="btn-secondary"/>
+                        <button name="action_housekeeping_clean" string="HK Clean" type="object" class="btn-light"/>
+                        <button name="action_housekeeping_inspect" string="HK Inspect" type="object" class="btn-light"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_blockings" type="object" class="oe_stat_button" icon="fa-calendar-times-o">
+                                <field name="blocking_count" widget="statinfo" string="Blockings"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="room_number"/>
+                                <field name="floor"/>
+                                <field name="room_type_id"/>
+                                <field name="max_occupancy" readonly="1" help="Max occupancy is defined in Room Type. Click on Room Type to edit."/>
+                            </group>
+                            <group>
+                                <field name="size_sqm" readonly="1"/>
+                                <field name="base_price" readonly="1"/>
+                                <field name="currency_id" readonly="1"/>
+                                <field name="maintenance_required"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="occupancy_state"/>
+                            </group>
+                            <group>
+                                <field name="housekeeping_state"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Room description..."/>
+                        </group>
+                        <group>
+                            <field name="maintenance_notes" placeholder="Maintenance notes..."/>
+                        </group>
+                        <group>
+                            <field name="status_change_reason" readonly="1"/>
+                            <field name="last_status_change" readonly="1"/>
+                        </group>
+                        <notebook>
+                            <page string="Room Blockings" name="blockings">
+                                <field name="blocking_ids">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="start_date"/>
+                                        <field name="end_date"/>
+                                        <field name="blocking_type"/>
+                                        <field name="responsible_user_id"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Hotel Room Search View -->
+        <record id="view_hotel_room_search" model="ir.ui.view">
+            <field name="name">hotel.room.search</field>
+            <field name="model">hotel.room</field>
+            <field name="arch" type="xml">
+                <search string="Rooms">
+                    <field name="room_number"/>
+                    <field name="room_type_id"/>
+                    <field name="floor"/>
+                    <field name="occupancy_state"/>
+                    <field name="housekeeping_state"/>
+                    <field name="last_status_change" string="From (Last Status Change)" filter_domain="[('last_status_change', '&gt;=', self)]"/>
+                    <field name="last_status_change" string="To (Last Status Change)" filter_domain="[('last_status_change', '&lt;=', self)]"/>
+                    <separator/>
+                    <filter string="Available" name="available" domain="[('occupancy_state', '=', 'available')]"/>
+                    <filter string="Reserved" name="reserved" domain="[('occupancy_state', '=', 'reserved')]"/>
+                    <filter string="Occupied" name="occupied" domain="[('occupancy_state', '=', 'occupied')]"/>
+                    <separator/>
+                    <filter string="Dirty (HK)" name="dirty" domain="[('housekeeping_state', '=', 'dirty')]"/>
+                    <filter string="Clean (HK)" name="clean" domain="[('housekeeping_state', '=', 'clean')]"/>
+                    <filter string="Inspected (HK)" name="inspected" domain="[('housekeeping_state', '=', 'inspected')]"/>
+                    <filter string="Out of Service (HK)" name="out_of_service" domain="[('housekeeping_state', '=', 'out_of_service')]"/>
+                    <separator/>
+                    <filter string="Maintenance Required" name="maintenance_required" domain="[('maintenance_required', '=', True)]"/>
+                    <separator/>
+                    <filter string="Today" name="today" domain="[('last_status_change', '>=', context_today())]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Room Type" name="group_room_type" context="{'group_by': 'room_type_id'}"/>
+                        <filter string="Floor" name="group_floor" context="{'group_by': 'floor'}"/>
+                        <filter string="Occupancy" name="group_occupancy" context="{'group_by': 'occupancy_state'}"/>
+                        <filter string="Housekeeping" name="group_housekeeping" context="{'group_by': 'housekeeping_state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Hotel Room Kanban View -->
+        <record id="view_hotel_room_kanban" model="ir.ui.view">
+            <field name="name">hotel.room.kanban</field>
+            <field name="model">hotel.room</field>
+            <field name="arch" type="xml">
+                <kanban string="Rooms" class="o_kanban_small_column">
+                    <field name="room_number"/>
+                    <field name="floor"/>
+                    <field name="room_type_id"/>
+                    <field name="occupancy_state"/>
+                    <field name="housekeeping_state"/>
+                    <field name="max_occupancy"/>
+                    <field name="maintenance_required"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click" t-att-class="'oe_kanban_card_' + record.status.raw_value">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                Room <field name="room_number"/>
+                                            </strong>
+                                            <div class="o_kanban_record_subtitle">
+                                                Floor <field name="floor"/> - <field name="room_type_id"/>
+                                            </div>
+                                        </div>
+                                        <div class="o_dropdown_kanban dropdown">
+                                            <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" aria-label="Dropdown menu" title="Dropdown menu">
+                                                <span class="fa fa-ellipsis-v"/>
+                                            </a>
+                                            <div class="dropdown-menu" role="menu">
+                                                <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                                <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div class="o_kanban_record_bottom">
+                                            <div class="oe_kanban_bottom_left">
+                                                <span>Max: <field name="max_occupancy"/></span>
+                                            </div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <span class="badge badge-pill" t-att-class="'badge-' + (record.occupancy_state.raw_value == 'available' ? 'success' : record.occupancy_state.raw_value == 'occupied' ? 'warning' : record.occupancy_state.raw_value == 'reserved' ? 'info' : 'danger')">
+                                                    <field name="occupancy_state"/>
+                                                </span>
+                                                <span t-if="record.maintenance_required.raw_value" class="fa fa-wrench text-warning" title="Maintenance Required"/>
+                                                <span t-if="record.housekeeping_state.raw_value == 'dirty'" class="fa fa-broom text-warning" title="HK Dirty"/>
+                                                <span t-if="record.housekeeping_state.raw_value == 'clean'" class="fa fa-broom text-info" title="HK Clean"/>
+                                                <span t-if="record.housekeeping_state.raw_value == 'inspected'" class="fa fa-check text-success" title="HK Inspected"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Hotel Room Calendar View -->
+        <record id="view_hotel_room_calendar" model="ir.ui.view">
+            <field name="name">hotel.room.calendar</field>
+            <field name="model">hotel.room</field>
+            <field name="arch" type="xml">
+                <calendar string="Room Status Calendar" date_start="create_date" color="occupancy_state">
+                    <field name="room_number"/>
+                    <field name="room_type_id"/>
+                    <field name="occupancy_state"/>
+                    <field name="housekeeping_state"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Hotel Room Action -->
+        <record id="action_hotel_room_act_window" model="ir.actions.act_window">
+            <field name="name">Rooms</field>
+            <field name="res_model">hotel.room</field>
+            <field name="view_mode">list,kanban,calendar,form</field>
+            <field name="search_view_id" ref="view_hotel_room_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first room!
+                </p>
+                <p>
+                    Rooms are the individual units in your hotel. Each room has a number,
+                    floor, type, and status that tracks its availability.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

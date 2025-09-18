@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="modulio_hotelcore.HotelDashboard">
+        <div class="o_hotel_dashboard o-webclient">
+            <t t-if="state.loading">
+                <div class="o_spinner"/>
+            </t>
+            <t t-else="">
+                <div class="o_hotel_dashboard_header">
+                    <div>
+                        <div class="o_hotel_dashboard_title">Hotel Dashboard</div>
+                        <div class="o_hotel_dashboard_subtitle">Overview of room availability and status summary</div>
+                        <div class="o_hotel_dashboard_last_updated" t-if="state.lastUpdated">
+                            Last updated: <t t-esc="state.lastUpdated"/>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary btn-sm" t-on-click="refreshData">
+                            <i class="fa fa-refresh"/> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="o_hotel_dashboard_content">
+                    <div class="o_hotel_dashboard_filters o_control_panel">
+                        <div class="o_cp_buttons">
+                            <div class="o_form_buttons_view">
+                                <label>Occupancy:</label>
+                                <select name="occupancy_state" t-ref="occupancySelect">
+                                    <option value="">All</option>
+                                    <option value="available">Available</option>
+                                    <option value="reserved">Reserved</option>
+                                    <option value="occupied">Occupied</option>
+                                </select>
+                                <label class="ms8">Housekeeping:</label>
+                                <select name="housekeeping_state" t-ref="housekeepingSelect">
+                                    <option value="">All</option>
+                                    <option value="dirty">Dirty</option>
+                                    <option value="clean">Clean</option>
+                                    <option value="inspected">Inspected</option>
+                                    <option value="out_of_service">Out of Service</option>
+                                </select>
+                                <label class="ms8">Room Type:</label>
+                                <select name="room_type_id" t-ref="roomTypeSelect">
+                                    <option value="">All</option>
+                                    <t t-foreach="state.roomTypeOptions" t-as="opt" t-key="opt.id">
+                                        <option t-att-value="opt.id" t-esc="opt.name"/>
+                                    </t>
+                                </select>
+                                <label class="ms8">Floor:</label>
+                                <input type="number" name="floor" t-ref="floorInput" placeholder="e.g. 1"/>
+                                <label class="ms8">Start:</label>
+                                <input type="date" name="start_date" t-ref="startDateInput"/>
+                                <label class="ms8">End:</label>
+                                <input type="date" name="end_date" t-ref="endDateInput"/>
+                                <button type="button" class="btn btn-primary btn-sm ms-2" t-on-click="applyFilters">
+                                    <i class="fa fa-search"/> Search
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm ms-1" t-on-click="clearFilters">
+                                    <i class="fa fa-times"/> Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="o_hotel_dashboard_kpis o-flex o-row o-gutter">
+                        <div class="o_kpi_card"><div class="o_kpi_value" t-esc="state.kpi.total"/>Total Rooms</div>
+                        <div class="o_kpi_card o_text-success"><div class="o_kpi_value" t-esc="state.kpi.available"/>Available</div>
+                        <div class="o_kpi_card o_text-info"><div class="o_kpi_value" t-esc="state.kpi.reserved"/>Reserved</div>
+                        <div class="o_kpi_card o_text-warning"><div class="o_kpi_value" t-esc="state.kpi.occupied"/>Occupied</div>
+                        <div class="o_kpi_card o_text-danger"><div class="o_kpi_value" t-esc="state.kpi.oos"/>Out of Service</div>
+                        <div class="o_kpi_card o_text-orange"><div class="o_kpi_value" t-esc="state.kpi.dirty"/>Dirty (HK)</div>
+                        <div class="o_kpi_card o_text-green"><div class="o_kpi_value" t-esc="state.kpi.clean"/>Clean (HK)</div>
+                        <div class="o_kpi_card o_text-purple"><div class="o_kpi_value" t-esc="state.kpi.inspected"/>Inspected (HK)</div>
+                    </div>
+                </div>
+
+                <div class="o_hotel_dashboard_rt o-mt16">
+                    <h3>Room Types Summary</h3>
+                    <div class="table-responsive">
+                        <table class="o_list_view table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>Total</th>
+                                    <th>Available</th>
+                                    <th>Availability (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.roomTypes" t-as="rt" t-key="rt.code or rt.room_type_id or rt.name">
+                                    <tr>
+                                        <td t-esc="rt.name"/>
+                                        <td t-esc="rt.code"/>
+                                        <td t-esc="rt.total_rooms"/>
+                                        <td t-esc="rt.available_rooms"/>
+                                        <td>
+                                            <t t-esc="(rt.availability_rate || 0).toFixed ? rt.availability_rate.toFixed(0) : rt.availability_rate"/>%
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="state.roomTypes.length > 0">
+                                    <tr class="table-info font-weight-bold">
+                                        <td><strong>Total Availability</strong></td>
+                                        <td><strong>-</strong></td>
+                                        <td><strong><t t-esc="state.kpi.total"/></strong></td>
+                                        <td><strong><t t-esc="state.kpi.available"/></strong></td>
+                                        <td>
+                                            <strong>
+                                                <t t-esc="(state.totalAvailabilityRate || 0).toFixed ? state.totalAvailabilityRate.toFixed(0) : state.totalAvailabilityRate"/>%
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_hotel_dashboard_rooms o-mt16">
+                    <h3>Rooms</h3>
+                    <div class="table-responsive">
+                        <table class="o_list_view table table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Room</th>
+                                    <th>Floor</th>
+                                    <th>Type</th>
+                                    <th>Occupancy</th>
+                                    <th>Housekeeping</th>
+                                    <th>Blocked</th>
+                                    <th>Maintenance</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.rooms" t-as="r" t-key="r.id">
+                                    <tr>
+                                        <td t-esc="r.room_number"/>
+                                        <td t-esc="r.floor"/>
+                                        <td t-esc="r.room_type_id &amp;&amp; r.room_type_id[1]"/>
+                                        <td>
+                                            <span t-attf-class="o_status_badge o_status_#{r.occupancy_state}">
+                                                <t t-esc="r.occupancy_state"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span t-attf-class="o_status_badge o_status_#{r.housekeeping_state}">
+                                                <t t-esc="r.housekeeping_state"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <t t-if="r.blocking_count > 0">
+                                                <t t-foreach="r.blocking_details" t-as="blocking" t-key="blocking.id">
+                                                    <span t-attf-class="o_blocking_badge o_blocking_#{blocking.blocking_type}">
+                                                        <t t-esc="blocking.blocking_type"/>
+                                                    </span>
+                                                    <t t-if="blocking_index &lt; r.blocking_details.length - 1">, </t>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="o_blocking_badge o_blocking_no">
+                                                    No
+                                                </span>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <span t-attf-class="o_maintenance_badge #{r.maintenance_required ? 'o_maintenance_yes' : 'o_maintenance_no'}">
+                                                <t t-esc="r.maintenance_required ? 'Yes' : 'No'"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-link p-0" t-on-click="() => openRoom(r.id)">Open</button>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>
+
+

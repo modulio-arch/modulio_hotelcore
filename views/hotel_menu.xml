@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Main Hotel Menu -->
+        <menuitem id="menu_hotel_main" 
+                  name="Hotel Management" 
+                  web_icon="modulio_hotelcore,static/description/icon.png"
+                  sequence="10"/>
+
+        <!-- Hotel Configuration Menu -->
+        <menuitem id="menu_hotel_config" 
+                  name="Configuration" 
+                  parent="menu_hotel_main" 
+                  sequence="30"/>
+
+        <!-- Room Types Menu -->
+        <menuitem id="menu_hotel_room_type" 
+                  name="Room Types" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_room_type_act_window" 
+                  sequence="10"/>
+
+        <!-- Rooms Menu -->
+        <menuitem id="menu_hotel_room" 
+                  name="Rooms" 
+                  parent="menu_hotel_main" 
+                  action="action_hotel_room_act_window" 
+                  sequence="20"/>
+
+
+        <!-- Room Blocking Menu -->
+        <menuitem id="menu_hotel_room_blocking" 
+                  name="Room Blocking" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_room_blocking_act_window" 
+                  sequence="20"/>
+
+        <!-- Settings Shortcut -->
+        <record id="action_modulio_hotelcore_settings" model="ir.actions.act_window">
+          <field name="name">Hotel Core Settings</field>
+          <field name="res_model">res.config.settings</field>
+          <field name="view_mode">form</field>
+          <field name="target">inline</field>
+          <field name="context">{'module': 'modulio_hotelcore', 'bin_size': False}</field>
+        </record>
+
+        <menuitem id="menu_settings_modulio_hotelcore"
+                  name="Settings"
+                  parent="menu_hotel_config"
+                  action="action_modulio_hotelcore_settings"
+                  sequence="99"
+                  groups="base.group_system"/>
+
+        <!-- Dashboard Menu -->
+        <menuitem id="menu_hotel_dashboard" 
+                  name="Dashboard" 
+                  parent="menu_hotel_main" 
+                  action="action_hotel_dashboard_client" 
+                  sequence="1"/>
+
+    </data>
+</odoo>
