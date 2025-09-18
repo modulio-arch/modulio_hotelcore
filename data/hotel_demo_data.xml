@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data>
         
         <!-- Room Types Demo Data -->
         <record id="room_type_single" model="hotel.room.type">
@@ -97,7 +97,7 @@
             <field name="occupancy_state">available</field>
             <field name="housekeeping_state">out_of_service</field>
             <field name="description">Under maintenance - AC repair</field>
-            <field name="maintenance_required">True</field>
+            <field name="maintenance_required" eval="True"/>
             <field name="maintenance_notes">Air conditioning unit needs replacement</field>
         </record>
 
@@ -145,7 +145,7 @@
             <field name="occupancy_state">available</field>
             <field name="housekeeping_state">out_of_service</field>
             <field name="description">Renovation in progress</field>
-            <field name="maintenance_required">True</field>
+            <field name="maintenance_required" eval="True"/>
             <field name="maintenance_notes">Complete room renovation - new furniture and fixtures</field>
         </record>
 
@@ -193,7 +193,7 @@
             <field name="occupancy_state">available</field>
             <field name="housekeeping_state">out_of_service</field>
             <field name="description">Plumbing maintenance</field>
-            <field name="maintenance_required">True</field>
+            <field name="maintenance_required" eval="True"/>
             <field name="maintenance_notes">Bathroom plumbing repair in progress</field>
         </record>
 
@@ -241,7 +241,7 @@
             <field name="occupancy_state">available</field>
             <field name="housekeeping_state">out_of_service</field>
             <field name="description">VIP suite under renovation</field>
-            <field name="maintenance_required">True</field>
+            <field name="maintenance_required" eval="True"/>
             <field name="maintenance_notes">Complete suite renovation - luxury upgrade</field>
         </record>
 
@@ -289,7 +289,7 @@
             <field name="occupancy_state">available</field>
             <field name="housekeeping_state">out_of_service</field>
             <field name="description">Family room - furniture replacement</field>
-            <field name="maintenance_required">True</field>
+            <field name="maintenance_required" eval="True"/>
             <field name="maintenance_notes">Replacing all furniture and fixtures</field>
         </record>
 
@@ -338,7 +338,7 @@
             <field name="occupancy_state">available</field>
             <field name="housekeeping_state">out_of_service</field>
             <field name="description">Family room - electrical maintenance</field>
-            <field name="maintenance_required">True</field>
+            <field name="maintenance_required" eval="True"/>
             <field name="maintenance_notes">Electrical system upgrade in progress</field>
         </record>
 
@@ -387,7 +387,7 @@
             <field name="occupancy_state">reserved</field>
             <field name="housekeeping_state">out_of_service</field>
             <field name="description">CRITICAL: Reserved but out of service - major problem</field>
-            <field name="maintenance_required">True</field>
+            <field name="maintenance_required" eval="True"/>
             <field name="maintenance_notes">Emergency maintenance - water leak discovered</field>
         </record>
 

@@ -66,5 +66,26 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
+        <!-- Access Rights for Hotel Room Blocking -->
+        <record id="access_hotel_room_blocking_user" model="ir.model.access">
+            <field name="name">hotel.room.blocking.user</field>
+            <field name="model_id" ref="model_hotel_room_blocking"/>
+            <field name="group_id" ref="group_hotel_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="access_hotel_room_blocking_manager" model="ir.model.access">
+            <field name="name">hotel.room.blocking.manager</field>
+            <field name="model_id" ref="model_hotel_room_blocking"/>
+            <field name="group_id" ref="group_hotel_manager"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
     </data>
 </odoo>

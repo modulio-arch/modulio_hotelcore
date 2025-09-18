@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Hotel Core',
-    'version': '18.0.1.0.3',
-    'category': 'Modulio',
+    'version': '18.0.1.0.0',
+    'category': 'Productivity',
     'summary': 'Core hotel management module providing room types, rooms, and basic security',
     'description': """
 Hotel Core Module
@@ -35,11 +35,11 @@ This module is essential for Front Office and Housekeeping modules as they depen
         'web.assets_backend': [
             'modulio_hotelcore/static/src/js/hotel_dashboard.js',
             'modulio_hotelcore/static/src/xml/hotel_dashboard.xml',
-            'modulio_hotelcore/static/src/scss/hotel_dashboard.scss',
+            'modulio_hotelcore/static/src/css/hotel_dashboard.css',
         ],
     },
     'installable': True,
-    'application': True,
+    'application': False,
     'auto_install': False,
     'license': 'LGPL-3',
 }

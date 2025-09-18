@@ -71,7 +71,7 @@ class HotelRoomBlocking(models.Model):
         ('out_of_order', 'Out of Order'),
         ('renovation', 'Renovation'),
         ('other', 'Other'),
-    ], string='Blocking Type', default=False, required=True,
+    ], string='Blocking Type', default='maintenance', required=True,
        tracking=True, help='Type of room blocking')
     
     reason = fields.Text(
