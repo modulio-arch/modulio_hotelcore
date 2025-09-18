@@ -2,7 +2,7 @@
 {
     'name': 'Hotel Core',
     'version': '18.0.1.0.0',
-    'category': 'Productivity',
+    'category': 'Sales',
     'summary': 'Core hotel management module providing room types, rooms, and basic security',
     'description': """
 Hotel Core Module
@@ -36,6 +36,7 @@ This module is essential for Front Office and Housekeeping modules as they depen
             'modulio_hotelcore/static/src/js/hotel_dashboard.js',
             'modulio_hotelcore/static/src/xml/hotel_dashboard.xml',
             'modulio_hotelcore/static/src/css/hotel_dashboard.css',
+            'modulio_hotelcore/static/src/scss/hotel_dashboard.scss',
         ],
     },
     'installable': True,
