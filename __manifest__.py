@@ -39,7 +39,7 @@ This module is essential for Front Office and Housekeeping modules as they depen
         ],
     },
     'installable': True,
-    'application': False,
+    'application': True,
     'auto_install': False,
     'license': 'LGPL-3',
 }
