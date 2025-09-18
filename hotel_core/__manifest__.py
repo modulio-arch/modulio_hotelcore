@@ -33,9 +33,9 @@ This module is essential for Front Office and Housekeeping modules as they depen
     ],
     'assets': {
         'web.assets_backend': [
-            'modulio_hotelcore/static/src/js/hotel_dashboard.js',
-            'modulio_hotelcore/static/src/xml/hotel_dashboard.xml',
-            'modulio_hotelcore/static/src/css/hotel_dashboard.css',
+            'hotel_core/static/src/js/hotel_dashboard.js',
+            'hotel_core/static/src/xml/hotel_dashboard.xml',
+            'hotel_core/static/src/css/hotel_dashboard.css',
         ],
     },
     'installable': True,
