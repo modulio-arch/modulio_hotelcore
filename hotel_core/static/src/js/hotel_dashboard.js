@@ -212,5 +212,3 @@ HotelDashboard.template = "modulio_hotelcore.HotelDashboard";
 registry.category("actions").add("hotel_dashboard", HotelDashboard);
 
 export default HotelDashboard;
-
-

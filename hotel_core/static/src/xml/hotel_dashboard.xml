@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="modulio_hotelcore.HotelDashboard">
-        <div class="o_hotel_dashboard o-webclient">
+        <div class="o_hotel_dashboard">
             <t t-if="state.loading">
                 <div class="o_spinner"/>
             </t>
@@ -183,5 +183,3 @@
         </div>
     </t>
 </templates>
-
-

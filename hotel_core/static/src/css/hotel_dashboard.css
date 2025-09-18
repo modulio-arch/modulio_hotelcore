@@ -312,3 +312,90 @@
   padding-bottom: 20px;
 }
 
+/* Additional Odoo 18 compatibility fixes */
+.o_hotel_dashboard .o_spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.o_hotel_dashboard .o_spinner:before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Fix for Odoo 18 table styling */
+.o_hotel_dashboard table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.o_hotel_dashboard table td {
+  vertical-align: middle;
+  padding: 8px 12px;
+}
+
+/* Fix for button styling */
+.o_hotel_dashboard .btn {
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.o_hotel_dashboard .btn-primary {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.o_hotel_dashboard .btn-primary:hover {
+  color: #fff;
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.o_hotel_dashboard .btn-secondary {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.o_hotel_dashboard .btn-secondary:hover {
+  color: #fff;
+  background-color: #545b62;
+  border-color: #4e555b;
+}
+
+.o_hotel_dashboard .btn-link {
+  color: #007bff;
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.o_hotel_dashboard .btn-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
