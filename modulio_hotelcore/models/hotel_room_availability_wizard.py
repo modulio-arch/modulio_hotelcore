@@ -56,7 +56,7 @@ class HotelRoomAvailabilityWizard(models.TransientModel):
             'type': 'ir.actions.act_window',
             'name': f'Room Availability - {self.start_date} to {self.end_date}',
             'res_model': 'hotel.room',
-            'view_mode': 'calendar,dashboard,list,form',
+            'view_mode': 'calendar,list,form',
             'view_id': False,
             'domain': domain,
             'context': {

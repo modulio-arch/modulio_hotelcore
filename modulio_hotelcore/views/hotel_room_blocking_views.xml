@@ -29,12 +29,12 @@
             <field name="arch" type="xml">
                 <form string="Room Blocking">
                     <header>
-                        <button name="action_activate" string="Activate" type="object" class="btn-primary" 
-                                invisible="status != 'planned'"/>
-                        <button name="action_complete" string="Complete" type="object" class="btn-success" 
-                                invisible="status != 'active'"/>
-                        <button name="action_cancel" string="Cancel" type="object" class="btn-danger" 
-                                invisible="status in ['completed', 'cancelled']"/>
+                        <button name="action_activate" string="Activate" type="object" class="btn-primary"
+                                attrs="{'invisible': [('status', '!=', 'planned')]}"/>
+                        <button name="action_complete" string="Complete" type="object" class="btn-success"
+                                attrs="{'invisible': [('status', '!=', 'active')]}"/>
+                        <button name="action_cancel" string="Cancel" type="object" class="btn-danger"
+                                attrs="{'invisible': [('status', 'in', ['completed', 'cancelled'])]}"/>
                         <field name="status" widget="statusbar" statusbar_visible="planned,active,completed"/>
                     </header>
                     <sheet>
