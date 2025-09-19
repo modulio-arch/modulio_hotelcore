@@ -2,7 +2,7 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -145,6 +145,9 @@ class HotelRoomBlocking(models.Model):
 
     def write(self, vals):
         """Override write to validate dates and check conflicts"""
+        status_before_map = {rec.id: rec.status for rec in self}
+        blocking_type_before_map = {rec.id: rec.blocking_type for rec in self}
+        
         if 'start_date' in vals or 'end_date' in vals or 'room_id' in vals:
             for record in self:
                 start_date = vals.get('start_date', record.start_date)
@@ -154,7 +157,59 @@ class HotelRoomBlocking(models.Model):
                 if start_date and end_date:
                     self._validate_dates(start_date, end_date)
                     self._check_room_availability(room_id, start_date, end_date, exclude_id=record.id)
-        return super().write(vals)
+        res = super().write(vals)
+
+        # Only affect room occupancy when status becomes active or leaves active
+        if 'status' in vals or 'blocking_type' in vals:
+            event_closes_inventory = self._event_closes_inventory()
+            for record in self:
+                prev_status = status_before_map.get(record.id)
+                new_status = record.status
+                prev_type = blocking_type_before_map.get(record.id)
+                new_type = record.blocking_type
+
+                # Transition into active → apply impact
+                if prev_status != 'active' and new_status == 'active':
+                    if record.room_id:
+                        room_vals = {
+                            'blocking_type': new_type,
+                            'blocking_reason': record.reason or record.name,
+                        }
+                        if new_type == 'event':
+                            if event_closes_inventory:
+                                room_vals['housekeeping_state'] = 'out_of_service'
+                        else:
+                            room_vals['housekeeping_state'] = 'out_of_service'
+                        record.room_id.write(room_vals)
+
+                # Transition out of active (to planned/completed/cancelled) → reset housekeeping
+                if prev_status == 'active' and new_status != 'active':
+                    if record.room_id:
+                        record.room_id.write({
+                            'housekeeping_state': 'inspected',
+                            'blocking_type': False,
+                            'blocking_reason': False,
+                        })
+
+                # Change type while active → re-apply impact based on new type
+                if new_status == 'active' and prev_status == 'active' and prev_type != new_type:
+                    if record.room_id:
+                        room_vals = {
+                            'blocking_type': new_type,
+                            'blocking_reason': record.reason or record.name,
+                        }
+                        if new_type == 'event':
+                            # If moving to event and config does not close inventory, clear housekeeping_state only if previously set by non-event
+                            if event_closes_inventory:
+                                room_vals['housekeeping_state'] = 'out_of_service'
+                            else:
+                                # do not change housekeeping_state
+                                pass
+                        else:
+                            room_vals['housekeeping_state'] = 'out_of_service'
+                        record.room_id.write(room_vals)
+
+        return res
 
     def _validate_dates(self, start_date, end_date):
         """Validate that start_date is before end_date"""
@@ -208,22 +263,27 @@ class HotelRoomBlocking(models.Model):
                 'blocking_reason': self.reason or self.name,
             }
             
+            event_closes_inventory = self._event_closes_inventory()
             if self.blocking_type == 'event':
-                room_vals['status'] = 'event'
-                _logger.info(f"Room {self.room_id.room_number} status set to EVENT for blocking {self.name}")
+                # New housekeeping_state only changes if event closes inventory
+                if event_closes_inventory:
+                    room_vals['housekeeping_state'] = 'out_of_service'
+                    _logger.info(f"Room {self.room_id.room_number} housekeeping_state set to OUT OF SERVICE (event closes inventory) for blocking {self.name}")
+                else:
+                    _logger.info(f"Room {self.room_id.room_number} housekeeping_state unchanged (event does not close inventory) for blocking {self.name}")
             else:  # maintenance, out_of_order, renovation, other
-                room_vals['status'] = 'out_of_service'
-                _logger.info(f"Room {self.room_id.room_number} status set to OUT OF SERVICE for {self.blocking_type.upper()} blocking {self.name}")
+                room_vals['housekeeping_state'] = 'out_of_service'
+                _logger.info(f"Room {self.room_id.room_number} housekeeping set to OUT OF SERVICE for {self.blocking_type.upper()} blocking {self.name}")
             
             self.room_id.write(room_vals)
 
     def action_complete(self):
         """Mark blocking as completed"""
         self.write({'status': 'completed'})
-        # Return room to Vacant Ready when blocking is completed
+        # Return room to Inspected when blocking is completed
         if self.room_id:
             self.room_id.write({
-                'status': 'vacant_ready',
+                'housekeeping_state': 'inspected',
                 'blocking_type': False,
                 'blocking_reason': False,
             })
@@ -231,10 +291,10 @@ class HotelRoomBlocking(models.Model):
     def action_cancel(self):
         """Cancel the blocking"""
         self.write({'status': 'cancelled'})
-        # Return room to Vacant Ready when blocking is cancelled
+        # Return room to Inspected when blocking is cancelled
         if self.room_id:
             self.room_id.write({
-                'status': 'vacant_ready',
+                'housekeeping_state': 'inspected',
                 'blocking_type': False,
                 'blocking_reason': False,
             })
@@ -248,10 +308,12 @@ class HotelRoomBlocking(models.Model):
             ('start_date', '<=', end_date),
             ('end_date', '>=', start_date),
         ]
-        
         blockings = self.search(domain)
+        # Only count blockings that close inventory
+        event_closes_inventory = self._event_closes_inventory()
+        closing_blockings = blockings.filtered(lambda b: b.blocking_type != 'event' or (b.blocking_type == 'event' and event_closes_inventory))
         return {
-            'available': len(blockings) == 0,
+            'available': len(closing_blockings) == 0,
             'blockings': blockings.read(['name', 'start_date', 'end_date', 'blocking_type', 'reason'])
         }
 
@@ -263,21 +325,21 @@ class HotelRoomBlocking(models.Model):
             ('start_date', '<=', end_date),
             ('end_date', '>=', start_date),
         ]
-        
         if room_type_id:
             domain.append(('room_type_id', '=', room_type_id))
-        
         blockings = self.search(domain)
-        
-        # Group by room_id
+        # If needed by callers, keep all blockings grouped; callers can decide which ones close inventory
         room_blockings = {}
         for blocking in blockings:
             room_id = blocking.room_id.id
-            if room_id not in room_blockings:
-                room_blockings[room_id] = []
-            room_blockings[room_id].append(blocking)
-        
+            room_blockings.setdefault(room_id, []).append(blocking)
         return room_blockings
+
+    @api.model
+    def _event_closes_inventory(self) -> bool:
+        """Read configuration whether event blocking closes inventory."""
+        params = self.env['ir.config_parameter'].sudo()
+        return params.get_param('modulio_hotelcore.event_closes_inventory', 'False') == 'True'
 
     @api.model
     def create_blocking_from_booking(self, room_id, start_date, end_date, booking_reference='', guest_name=''):

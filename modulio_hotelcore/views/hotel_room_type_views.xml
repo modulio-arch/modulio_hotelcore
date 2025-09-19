@@ -62,7 +62,6 @@
                                     <list>
                                         <field name="room_number"/>
                                         <field name="floor"/>
-                                        <field name="status"/>
                                         <field name="maintenance_required"/>
                                     </list>
                                 </field>

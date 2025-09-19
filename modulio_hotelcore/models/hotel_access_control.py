@@ -24,7 +24,7 @@ class HotelRoomType(models.Model):
                     "• Set up room capacity and features\n\n"
                     "As a Hotel User, you can:\n"
                     "• View existing room types\n"
-                    "• Manage room status and maintenance\n"
+                    "• Manage occupancy/housekeeping and maintenance\n"
                     "• Update room information"
                 ))
             elif operation == 'write':
@@ -38,7 +38,7 @@ class HotelRoomType(models.Model):
                     "• Modify room capacity settings\n\n"
                     "As a Hotel User, you can:\n"
                     "• View room type information\n"
-                    "• Manage individual room status\n"
+                    "• Manage individual room occupancy/housekeeping\n"
                     "• Update room maintenance notes"
                 ))
             elif operation == 'unlink':
@@ -51,7 +51,7 @@ class HotelRoomType(models.Model):
                     "• Archive old room configurations\n\n"
                     "As a Hotel User, you can:\n"
                     "• View all room types\n"
-                    "• Manage room status and maintenance"
+                    "• Manage occupancy/housekeeping and maintenance"
                 ))
         
         return result
@@ -64,10 +64,10 @@ class HotelRoomType(models.Model):
             "If you need to manage room types:\n"
             "• Delete unused room types permanently\n"
             "• Create new room types as needed\n"
-            "• Use room status management for availability control\n\n"
-            "For room availability, use room status instead:\n"
-            "• Out of Service - for maintenance\n"
-            "• Vacant Ready - for available rooms"
+            "• Use occupancy/housekeeping states for availability control\n\n"
+            "For availability control, use:\n"
+            "• Occupancy: Out of Service / Available / Reserved / Occupied\n"
+            "• Housekeeping: Dirty / Clean / Inspected"
         ))
 
 
@@ -90,8 +90,8 @@ class HotelRoom(models.Model):
                     "• Set up room numbers and floor assignments\n"
                     "• Configure room types and features\n\n"
                     "As a Hotel User, you can:\n"
-                    "• View all rooms and their status\n"
-                    "• Update room status (Vacant, Occupied, Dirty, etc.)\n"
+                    "• View all rooms and their occupancy/housekeeping states\n"
+                    "• Update occupancy (Reserve/Check-in/Check-out) and housekeeping (Clean/Inspect)\n"
                     "• Manage room maintenance and notes"
                 ))
             elif operation == 'unlink':
@@ -103,7 +103,7 @@ class HotelRoom(models.Model):
                     "• Remove rooms from the system\n"
                     "• Archive unused room records\n\n"
                     "As a Hotel User, you can:\n"
-                    "• View all rooms and their status\n"
+                    "• View all rooms and their occupancy/housekeeping states\n"
                     "• Update room information and maintenance notes\n"
                     "• Change room status as needed"
                 ))
@@ -118,11 +118,9 @@ class HotelRoom(models.Model):
             "If you need to manage rooms:\n"
             "• Delete unused rooms permanently\n"
             "• Create new rooms as needed\n"
-            "• Use room status management for availability control\n\n"
-            "For room availability, use room status instead:\n"
-            "• Out of Service - for maintenance\n"
-            "• Vacant Ready - for available rooms\n"
-            "• Dirty - for rooms needing cleaning\n"
-            "• Occupied - for rooms with guests"
+            "• Use occupancy/housekeeping states for availability control\n\n"
+            "For availability control, use:\n"
+            "• Occupancy: Out of Service / Available / Reserved / Occupied\n"
+            "• Housekeeping: Dirty / Clean / Inspected"
         ))
 

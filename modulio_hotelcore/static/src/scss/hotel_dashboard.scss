@@ -168,14 +168,23 @@
   font-size: 12px;
   font-weight: 600;
   color: #fff;
+  text-transform: capitalize;
 }
-.o_status_vacant_ready { background: #2e7d32; }
+
+/* Occupancy States */
+.o_status_available { background: #2e7d32; }
 .o_status_reserved { background: #1e88e5; }
 .o_status_occupied { background: #f9a825; color: #212121; }
-.o_status_dirty { background: #fb8c00; }
-.o_status_inspected { background: #6c757d; }
-.o_status_event { background: #9c27b0; }
 .o_status_out_of_service { background: #e53935; }
+
+/* Housekeeping States */
+.o_status_dirty { background: #fb8c00; }
+.o_status_clean { background: #4caf50; }
+.o_status_inspected { background: #6c757d; }
+
+/* Legacy support (if any) */
+.o_status_vacant_ready { background: #2e7d32; }
+.o_status_event { background: #9c27b0; }
 
 .o_maintenance_badge {
   display: inline-block;
@@ -195,12 +204,36 @@
   font-size: 12px;
   font-weight: 600;
   color: #fff;
+  text-transform: capitalize;
 }
-.o_blocking_maintenance { background: #ff9800; }
-.o_blocking_event { background: #9c27b0; }
-.o_blocking_out_of_order { background: #f44336; }
-.o_blocking_renovation { background: #795548; }
-.o_blocking_other { background: #607d8b; }
+.o_blocking_yes { 
+  background: #f44336; 
+  color: #fff;
+}
+.o_blocking_no { 
+  background: #4caf50; 
+  color: #fff;
+}
+.o_blocking_maintenance { 
+  background: #f44336; 
+  color: #fff;
+}
+.o_blocking_event { 
+  background: #f44336; 
+  color: #fff;
+}
+.o_blocking_out_of_order { 
+  background: #f44336; 
+  color: #fff;
+}
+.o_blocking_renovation { 
+  background: #f44336; 
+  color: #fff;
+}
+.o_blocking_other { 
+  background: #f44336; 
+  color: #fff;
+}
 
 .o_hotel_dashboard_rooms {
   margin-bottom: 20px;

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="view_res_config_settings_inherit_modulio_hotelcore" model="ir.ui.view">
+      <field name="name">res.config.settings.view.form.inherit.modulio_hotelcore</field>
+      <field name="model">res.config.settings</field>
+      <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//form" position="inside">
+          <app data-string="Hotel Core Settings" string="Hotel Core Settings" name="modulio_hotelcore" groups="base.group_system">
+
+            <block title="Blocking &amp; Availability">
+              <setting string="Event Closes Inventory" help="If enabled, Event blockings will close inventory (set occupancy to Out of Service)">
+                <field name="modulio_hotelcore_event_closes_inventory"/>
+              </setting>
+              <setting string="Require Inspected to Sell" help="If enabled, a room must be Inspected (housekeeping) to be sellable">
+                <field name="modulio_hotelcore_require_inspected_to_sell"/>
+              </setting>
+            </block>
+
+          </app>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>
+
+

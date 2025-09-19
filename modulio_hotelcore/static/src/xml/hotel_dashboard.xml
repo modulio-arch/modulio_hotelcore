@@ -25,15 +25,19 @@
                     <div class="o_hotel_dashboard_filters o_control_panel">
                         <div class="o_cp_buttons">
                             <div class="o_form_buttons_view">
-                                <label>Status:</label>
-                                <select name="status" t-ref="statusSelect">
+                                <label>Occupancy:</label>
+                                <select name="occupancy_state" t-ref="occupancySelect">
                                     <option value="">All</option>
-                                    <option value="vacant_ready">Vacant Ready</option>
+                                    <option value="available">Available</option>
                                     <option value="reserved">Reserved</option>
                                     <option value="occupied">Occupied</option>
+                                </select>
+                                <label class="ms8">Housekeeping:</label>
+                                <select name="housekeeping_state" t-ref="housekeepingSelect">
+                                    <option value="">All</option>
                                     <option value="dirty">Dirty</option>
+                                    <option value="clean">Clean</option>
                                     <option value="inspected">Inspected</option>
-                                    <option value="event">Event</option>
                                     <option value="out_of_service">Out of Service</option>
                                 </select>
                                 <label class="ms8">Room Type:</label>
@@ -64,9 +68,10 @@
                         <div class="o_kpi_card o_text-success"><div class="o_kpi_value" t-esc="state.kpi.available"/>Available</div>
                         <div class="o_kpi_card o_text-info"><div class="o_kpi_value" t-esc="state.kpi.reserved"/>Reserved</div>
                         <div class="o_kpi_card o_text-warning"><div class="o_kpi_value" t-esc="state.kpi.occupied"/>Occupied</div>
-                        <div class="o_kpi_card o_text-orange"><div class="o_kpi_value" t-esc="state.kpi.dirty"/>Dirty</div>
-                        <div class="o_kpi_card o_text-purple"><div class="o_kpi_value" t-esc="state.kpi.event"/>Event</div>
                         <div class="o_kpi_card o_text-danger"><div class="o_kpi_value" t-esc="state.kpi.oos"/>Out of Service</div>
+                        <div class="o_kpi_card o_text-orange"><div class="o_kpi_value" t-esc="state.kpi.dirty"/>Dirty (HK)</div>
+                        <div class="o_kpi_card o_text-green"><div class="o_kpi_value" t-esc="state.kpi.clean"/>Clean (HK)</div>
+                        <div class="o_kpi_card o_text-purple"><div class="o_kpi_value" t-esc="state.kpi.inspected"/>Inspected (HK)</div>
                     </div>
                 </div>
 
@@ -95,6 +100,19 @@
                                         </td>
                                     </tr>
                                 </t>
+                                <t t-if="state.roomTypes.length > 0">
+                                    <tr class="table-info font-weight-bold">
+                                        <td><strong>Total Availability</strong></td>
+                                        <td><strong>-</strong></td>
+                                        <td><strong><t t-esc="state.kpi.total"/></strong></td>
+                                        <td><strong><t t-esc="state.kpi.available"/></strong></td>
+                                        <td>
+                                            <strong>
+                                                <t t-esc="(state.totalAvailabilityRate || 0).toFixed ? state.totalAvailabilityRate.toFixed(0) : state.totalAvailabilityRate"/>%
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </t>
                             </tbody>
                         </table>
                     </div>
@@ -109,7 +127,8 @@
                                     <th>Room</th>
                                     <th>Floor</th>
                                     <th>Type</th>
-                                    <th>Status</th>
+                                    <th>Occupancy</th>
+                                    <th>Housekeeping</th>
                                     <th>Blocked</th>
                                     <th>Maintenance</th>
                                     <th></th>
@@ -122,12 +141,29 @@
                                         <td t-esc="r.floor"/>
                                         <td t-esc="r.room_type_id &amp;&amp; r.room_type_id[1]"/>
                                         <td>
-                                            <span t-attf-class="o_status_badge o_status_#{r.status}">
-                                                <t t-esc="r.status"/>
+                                            <span t-attf-class="o_status_badge o_status_#{r.occupancy_state}">
+                                                <t t-esc="r.occupancy_state"/>
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="text-muted">-</span>
+                                            <span t-attf-class="o_status_badge o_status_#{r.housekeeping_state}">
+                                                <t t-esc="r.housekeeping_state"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <t t-if="r.blocking_count > 0">
+                                                <t t-foreach="r.blocking_details" t-as="blocking" t-key="blocking.id">
+                                                    <span t-attf-class="o_blocking_badge o_blocking_#{blocking.blocking_type}">
+                                                        <t t-esc="blocking.blocking_type"/>
+                                                    </span>
+                                                    <t t-if="blocking_index &lt; r.blocking_details.length - 1">, </t>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="o_blocking_badge o_blocking_no">
+                                                    No
+                                                </span>
+                                            </t>
                                         </td>
                                         <td>
                                             <span t-attf-class="o_maintenance_badge #{r.maintenance_required ? 'o_maintenance_yes' : 'o_maintenance_no'}">
