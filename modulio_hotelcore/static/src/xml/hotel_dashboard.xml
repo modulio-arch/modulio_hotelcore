@@ -128,19 +128,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <t t-if="r.blocking_count > 0">
-                                                <t t-foreach="r.blocking_details" t-as="blocking" t-key="blocking.id">
-                                                    <span t-attf-class="o_blocking_badge o_blocking_#{blocking.blocking_type}">
-                                                        <t t-esc="blocking.blocking_type"/>
-                                                    </span>
-                                                    <t t-if="blocking_index &lt; r.blocking_details.length - 1">, </t>
-                                                </t>
-                                            </t>
-                                            <t t-else="">
-                                                <span class="o_blocking_badge o_blocking_no">
-                                                    No
-                                                </span>
-                                            </t>
+                                            <span class="text-muted">-</span>
                                         </td>
                                         <td>
                                             <span t-attf-class="o_maintenance_badge #{r.maintenance_required ? 'o_maintenance_yes' : 'o_maintenance_no'}">

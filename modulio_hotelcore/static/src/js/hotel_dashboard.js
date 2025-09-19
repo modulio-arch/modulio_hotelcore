@@ -37,9 +37,8 @@ class HotelDashboard extends Component {
         try {
             console.log("Loading dashboard data...");
             this.state.loading = true;
-            const ctx = this.state.filters;
             
-            // Fetch KPI summary per status
+            // Simple KPI counts - no complex methods
             const total = await this.orm.searchCount("hotel.room", []);
             const available = await this.orm.searchCount("hotel.room", [["status", "in", ["vacant_ready", "inspected"]]]);
             const occupied = await this.orm.searchCount("hotel.room", [["status", "=", "occupied"]]);
@@ -49,56 +48,32 @@ class HotelDashboard extends Component {
             const event = await this.orm.searchCount("hotel.room", [["status", "=", "event"]]);
             const oos = await this.orm.searchCount("hotel.room", [["status", "=", "out_of_service"]]);
 
-            // Check if component is still mounted before updating state
             if (this.state) {
                 this.state.kpi = { total, available, occupied, reserved, dirty, inspected, event, oos };
             }
 
-            // Fetch room types summary from model method
-            try {
-                const summary = await this.orm.call("hotel.room.type", "get_room_type_availability_summary", [ctx.start_date || false, ctx.end_date || false]);
-                if (this.state) {
-                    this.state.roomTypes = summary.room_types || [];
-                }
-            } catch (error) {
-                console.error("Error fetching room types summary:", error);
-                if (this.state) {
-                    this.state.roomTypes = [];
-                }
-            }
-
-            // load room type options
-            const rt = await this.orm.searchRead("hotel.room.type", [], ["name"], { limit: 200, order: "sequence,name" });
+            // Simple room types list - no complex methods
+            const roomTypes = await this.orm.searchRead("hotel.room.type", [], ["name", "code", "room_count"], { limit: 50 });
             if (this.state) {
-                this.state.roomTypeOptions = rt.map((r) => ({ id: r.id, name: r.name }));
+                this.state.roomTypes = roomTypes.map(rt => ({
+                    room_type_id: rt.id,
+                    name: rt.name,
+                    code: rt.code,
+                    total_rooms: rt.room_count,
+                    available_rooms: 0, // Will calculate later if needed
+                    availability_rate: 0
+                }));
+                this.state.roomTypeOptions = roomTypes.map((r) => ({ id: r.id, name: r.name }));
             }
 
-            // Fetch rooms (limited)
-            const domain = [];
-            if (ctx.room_type_id) domain.push(["room_type_id", "=", ctx.room_type_id]);
-            if (ctx.floor) domain.push(["floor", "=", ctx.floor]);
-            if (ctx.status) domain.push(["status", "=", ctx.status]);
+            // Simple rooms list - no complex methods
+            const rooms = await this.orm.searchRead("hotel.room", [], ["room_number", "floor", "room_type_id", "status", "maintenance_required"], { limit: 50 });
             
-            console.log("Room filter domain:", domain);
-            console.log("Applied filters:", ctx);
-            
-            const rooms = await this.orm.searchRead("hotel.room", domain, ["room_number", "floor", "room_type_id", "status", "maintenance_required", "blocking_count", "blocking_ids"], { limit: 40 });
-            
-            // Get blocking details for rooms that have blockings
-            for (let room of rooms) {
-                if (room.blocking_count > 0) {
-                    const blockings = await this.orm.searchRead("hotel.room.blocking", 
-                        [["room_id", "=", room.id], ["status", "in", ["planned", "active"]]], 
-                        ["blocking_type", "name", "status"]
-                    );
-                    room.blocking_details = blockings;
-                }
-            }
             if (this.state) {
                 this.state.rooms = rooms;
                 this.state.loading = false;
                 this.state.lastUpdated = new Date().toLocaleTimeString();
-                console.log("Dashboard data updated successfully", {
+                console.log("Dashboard data loaded successfully", {
                     kpi: this.state.kpi,
                     roomsCount: this.state.rooms.length,
                     lastUpdated: this.state.lastUpdated
@@ -106,14 +81,8 @@ class HotelDashboard extends Component {
             }
         } catch (error) {
             console.error("Error loading dashboard data:", error);
-            console.error("Error details:", {
-                message: error.message,
-                data: error.data,
-                name: error.name
-            });
             if (this.state) {
                 this.state.loading = false;
-                // Set default values to prevent UI errors
                 this.state.kpi = { total: 0, available: 0, occupied: 0, reserved: 0, dirty: 0, inspected: 0, event: 0, oos: 0 };
                 this.state.roomTypes = [];
                 this.state.rooms = [];
