@@ -172,15 +172,27 @@
 }
 
 /* Occupancy States */
-.o_status_available { background: #2e7d32; }
-.o_status_reserved { background: #1e88e5; }
-.o_status_occupied { background: #f9a825; color: #212121; }
-.o_status_out_of_service { background: #e53935; }
+.o_occupancy_available { background: #2e7d32; }
+.o_occupancy_reserved { background: #1e88e5; }
+.o_occupancy_occupied { background: #f9a825; color: #212121; }
 
 /* Housekeeping States */
-.o_status_dirty { background: #fb8c00; }
-.o_status_clean { background: #4caf50; }
-.o_status_inspected { background: #6c757d; }
+.o_housekeeping_dirty { background: #fb8c00; }
+.o_housekeeping_clean { background: #4caf50; }
+.o_housekeeping_inspected { background: #6c757d; }
+.o_housekeeping_out_of_service { background: #e53935; }
+
+/* Status badges container */
+.o_status_badges {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.o_status_badges .o_status_badge {
+  display: inline-block;
+  width: fit-content;
+}
 
 /* Legacy support (if any) */
 .o_status_vacant_ready { background: #2e7d32; }

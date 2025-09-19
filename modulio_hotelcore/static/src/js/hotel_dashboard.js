@@ -11,10 +11,10 @@ class HotelDashboard extends Component {
         this.actionService = useService("action");
         this.state = useState({
             loading: true,
-            kpi: { total: 0, available: 0, occupied: 0, reserved: 0, dirty: 0, inspected: 0, event: 0, oos: 0 },
+            kpi: { total: 0, available: 0, occupied: 0, reserved: 0, dirty: 0, inspected: 0, clean: 0, oos: 0 },
             roomTypes: [],
             rooms: [],
-            filters: { room_type_id: false, floor: false, start_date: false, end_date: false, status: "" },
+            filters: { room_type_id: false, floor: false, start_date: false, end_date: false, occupancy_state: false, housekeeping_state: false },
             roomTypeOptions: [],
             lastUpdated: null,
         });
@@ -38,18 +38,18 @@ class HotelDashboard extends Component {
             console.log("Loading dashboard data...");
             this.state.loading = true;
             
-            // Simple KPI counts - no complex methods
-            const total = await this.orm.searchCount("hotel.room", []);
-            const available = await this.orm.searchCount("hotel.room", [["status", "in", ["vacant_ready", "inspected"]]]);
-            const occupied = await this.orm.searchCount("hotel.room", [["status", "=", "occupied"]]);
-            const reserved = await this.orm.searchCount("hotel.room", [["status", "=", "reserved"]]);
-            const dirty = await this.orm.searchCount("hotel.room", [["status", "=", "dirty"]]);
-            const inspected = await this.orm.searchCount("hotel.room", [["status", "=", "inspected"]]);
-            const event = await this.orm.searchCount("hotel.room", [["status", "=", "event"]]);
-            const oos = await this.orm.searchCount("hotel.room", [["status", "=", "out_of_service"]]);
+        // Simple KPI counts - no complex methods
+        const total = await this.orm.searchCount("hotel.room", []);
+        const available = await this.orm.searchCount("hotel.room", [["occupancy_state", "=", "available"]]);
+        const occupied = await this.orm.searchCount("hotel.room", [["occupancy_state", "=", "occupied"]]);
+        const reserved = await this.orm.searchCount("hotel.room", [["occupancy_state", "=", "reserved"]]);
+        const dirty = await this.orm.searchCount("hotel.room", [["housekeeping_state", "=", "dirty"]]);
+        const inspected = await this.orm.searchCount("hotel.room", [["housekeeping_state", "=", "inspected"]]);
+        const clean = await this.orm.searchCount("hotel.room", [["housekeeping_state", "=", "clean"]]);
+        const oos = await this.orm.searchCount("hotel.room", [["housekeeping_state", "=", "out_of_service"]]);
 
             if (this.state) {
-                this.state.kpi = { total, available, occupied, reserved, dirty, inspected, event, oos };
+                this.state.kpi = { total, available, occupied, reserved, dirty, inspected, clean, oos };
             }
 
             // Simple room types list - no complex methods
@@ -67,7 +67,7 @@ class HotelDashboard extends Component {
             }
 
             // Simple rooms list - no complex methods
-            const rooms = await this.orm.searchRead("hotel.room", [], ["room_number", "floor", "room_type_id", "status", "maintenance_required"], { limit: 50 });
+            const rooms = await this.orm.searchRead("hotel.room", [], ["room_number", "floor", "room_type_id", "occupancy_state", "housekeeping_state", "maintenance_required"], { limit: 50 });
             
             if (this.state) {
                 this.state.rooms = rooms;
@@ -83,7 +83,7 @@ class HotelDashboard extends Component {
             console.error("Error loading dashboard data:", error);
             if (this.state) {
                 this.state.loading = false;
-                this.state.kpi = { total: 0, available: 0, occupied: 0, reserved: 0, dirty: 0, inspected: 0, event: 0, oos: 0 };
+                this.state.kpi = { total: 0, available: 0, occupied: 0, reserved: 0, dirty: 0, inspected: 0, clean: 0, oos: 0 };
                 this.state.roomTypes = [];
                 this.state.rooms = [];
             }
@@ -94,20 +94,23 @@ class HotelDashboard extends Component {
         console.log("Applying filters...");
         
         // Get values from form elements using document.querySelector
-        const statusEl = document.querySelector('select[name="status"]');
+        const occupancyEl = document.querySelector('select[name="occupancy_state"]');
+        const housekeepingEl = document.querySelector('select[name="housekeeping_state"]');
         const roomTypeEl = document.querySelector('select[name="room_type_id"]');
         const floorEl = document.querySelector('input[name="floor"]');
         const startDateEl = document.querySelector('input[name="start_date"]');
         const endDateEl = document.querySelector('input[name="end_date"]');
         
-        const statusValue = statusEl?.value || "";
+        const occupancyValue = occupancyEl?.value || "";
+        const housekeepingValue = housekeepingEl?.value || "";
         const roomTypeValue = roomTypeEl?.value || "";
         const floorValue = floorEl?.value || "";
         const startDateValue = startDateEl?.value || "";
         const endDateValue = endDateEl?.value || "";
         
         console.log("Raw form values:", {
-            status: statusValue,
+            occupancy: occupancyValue,
+            housekeeping: housekeepingValue,
             roomType: roomTypeValue,
             floor: floorValue,
             startDate: startDateValue,
@@ -115,7 +118,8 @@ class HotelDashboard extends Component {
         });
         
         console.log("Form elements found:", {
-            statusEl: !!statusEl,
+            occupancyEl: !!occupancyEl,
+            housekeepingEl: !!housekeepingEl,
             roomTypeEl: !!roomTypeEl,
             floorEl: !!floorEl,
             startDateEl: !!startDateEl,
@@ -124,7 +128,8 @@ class HotelDashboard extends Component {
         
         // Update filters state
         this.state.filters = {
-            status: statusValue || false,
+            occupancy_state: occupancyValue || false,
+            housekeeping_state: housekeepingValue || false,
             room_type_id: roomTypeValue ? parseInt(roomTypeValue) : false,
             floor: floorValue ? parseInt(floorValue) : false,
             start_date: startDateValue || false,
@@ -139,13 +144,15 @@ class HotelDashboard extends Component {
         console.log("Clearing filters...");
         
         // Reset form elements using document.querySelector
-        const statusEl = document.querySelector('select[name="status"]');
+        const occupancyEl = document.querySelector('select[name="occupancy_state"]');
+        const housekeepingEl = document.querySelector('select[name="housekeeping_state"]');
         const roomTypeEl = document.querySelector('select[name="room_type_id"]');
         const floorEl = document.querySelector('input[name="floor"]');
         const startDateEl = document.querySelector('input[name="start_date"]');
         const endDateEl = document.querySelector('input[name="end_date"]');
         
-        if (statusEl) statusEl.value = "";
+        if (occupancyEl) occupancyEl.value = "";
+        if (housekeepingEl) housekeepingEl.value = "";
         if (roomTypeEl) roomTypeEl.value = "";
         if (floorEl) floorEl.value = "";
         if (startDateEl) startDateEl.value = "";
@@ -157,7 +164,8 @@ class HotelDashboard extends Component {
             floor: false,
             start_date: false,
             end_date: false,
-            status: false,
+            occupancy_state: false,
+            housekeeping_state: false,
         };
         
         console.log("Filters cleared");

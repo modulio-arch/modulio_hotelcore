@@ -23,19 +23,23 @@
 
                 <div class="o_hotel_dashboard_content">
                     <div class="o_hotel_dashboard_filters o_control_panel">
-                        <div class="o_cp_buttons">
-                            <div class="o_form_buttons_view">
-                                <label>Status:</label>
-                                <select name="status" t-ref="statusSelect">
-                                    <option value="">All</option>
-                                    <option value="vacant_ready">Vacant Ready</option>
-                                    <option value="reserved">Reserved</option>
-                                    <option value="occupied">Occupied</option>
-                                    <option value="dirty">Dirty</option>
-                                    <option value="inspected">Inspected</option>
-                                    <option value="event">Event</option>
-                                    <option value="out_of_service">Out of Service</option>
-                                </select>
+                <div class="o_cp_buttons">
+                    <div class="o_form_buttons_view">
+                        <label>Occupancy:</label>
+                        <select name="occupancy_state" t-ref="occupancySelect">
+                            <option value="">All</option>
+                            <option value="available">Available</option>
+                            <option value="reserved">Reserved</option>
+                            <option value="occupied">Occupied</option>
+                        </select>
+                        <label>Housekeeping:</label>
+                        <select name="housekeeping_state" t-ref="housekeepingSelect">
+                            <option value="">All</option>
+                            <option value="dirty">Dirty</option>
+                            <option value="clean">Clean</option>
+                            <option value="inspected">Inspected</option>
+                            <option value="out_of_service">Out of Service</option>
+                        </select>
                                 <label class="ms8">Room Type:</label>
                                 <select name="room_type_id" t-ref="roomTypeSelect">
                                     <option value="">All</option>
@@ -65,8 +69,8 @@
                         <div class="o_kpi_card o_text-info"><div class="o_kpi_value" t-esc="state.kpi.reserved"/>Reserved</div>
                         <div class="o_kpi_card o_text-warning"><div class="o_kpi_value" t-esc="state.kpi.occupied"/>Occupied</div>
                         <div class="o_kpi_card o_text-orange"><div class="o_kpi_value" t-esc="state.kpi.dirty"/>Dirty</div>
+                        <div class="o_kpi_card o_text-muted"><div class="o_kpi_value" t-esc="state.kpi.clean"/>Clean</div>
                         <div class="o_kpi_card o_text-muted"><div class="o_kpi_value" t-esc="state.kpi.inspected"/>Inspected</div>
-                        <div class="o_kpi_card o_text-purple"><div class="o_kpi_value" t-esc="state.kpi.event"/>Event</div>
                         <div class="o_kpi_card o_text-danger"><div class="o_kpi_value" t-esc="state.kpi.oos"/>Out of Service</div>
                     </div>
                 </div>
@@ -110,7 +114,7 @@
                                     <th>Room</th>
                                     <th>Floor</th>
                                     <th>Type</th>
-                                    <th>Status</th>
+                                    <th>Occupancy / Housekeeping</th>
                                     <th>Blocked</th>
                                     <th>Maintenance</th>
                                     <th></th>
@@ -123,9 +127,14 @@
                                         <td t-esc="r.floor"/>
                                         <td t-esc="r.room_type_id &amp;&amp; r.room_type_id[1]"/>
                                         <td>
-                                            <span t-attf-class="o_status_badge o_status_#{r.status}">
-                                                <t t-esc="r.status"/>
-                                            </span>
+                                            <div class="o_status_badges">
+                                                <span t-attf-class="o_status_badge o_occupancy_#{r.occupancy_state}">
+                                                    <t t-esc="r.occupancy_state"/>
+                                                </span>
+                                                <span t-attf-class="o_status_badge o_housekeeping_#{r.housekeeping_state}">
+                                                    <t t-esc="r.housekeeping_state"/>
+                                                </span>
+                                            </div>
                                         </td>
                                         <td>
                                             <span class="text-muted">-</span>
