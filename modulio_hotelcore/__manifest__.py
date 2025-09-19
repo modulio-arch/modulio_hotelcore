@@ -2,7 +2,7 @@
 {
     'name': 'Hotel Core',
     'version': '18.0.1.0.2',
-    'category': 'Modulio',
+    'category': 'Sales',
     'summary': 'Core hotel management module providing room types, rooms, and basic security',
     'description': """
 Hotel Core Module
