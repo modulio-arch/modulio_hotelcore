@@ -114,7 +114,8 @@
                                     <th>Room</th>
                                     <th>Floor</th>
                                     <th>Type</th>
-                                    <th>Occupancy / Housekeeping</th>
+                                    <th>Occupancy</th>
+                                    <th>Housekeeping</th>
                                     <th>Blocked</th>
                                     <th>Maintenance</th>
                                     <th></th>
@@ -127,14 +128,14 @@
                                         <td t-esc="r.floor"/>
                                         <td t-esc="r.room_type_id &amp;&amp; r.room_type_id[1]"/>
                                         <td>
-                                            <div class="o_status_badges">
-                                                <span t-attf-class="o_status_badge o_occupancy_#{r.occupancy_state}">
-                                                    <t t-esc="r.occupancy_state"/>
-                                                </span>
-                                                <span t-attf-class="o_status_badge o_housekeeping_#{r.housekeeping_state}">
-                                                    <t t-esc="r.housekeeping_state"/>
-                                                </span>
-                                            </div>
+                                            <span t-attf-class="o_status_badge o_occupancy_#{r.occupancy_state}">
+                                                <t t-esc="r.occupancy_state"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span t-attf-class="o_status_badge o_housekeeping_#{r.housekeeping_state}">
+                                                <t t-esc="r.housekeeping_state"/>
+                                            </span>
                                         </td>
                                         <td>
                                             <span class="text-muted">-</span>
