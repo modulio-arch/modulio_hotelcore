@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from datetime import timedelta
 
 
 class HotelRoomType(models.Model):
@@ -160,6 +161,11 @@ class HotelRoomType(models.Model):
     @api.model
     def get_room_type_availability_summary(self, start_date, end_date):
         """Get availability summary for all room types (integration point)"""
+        # Handle empty dates gracefully
+        if not start_date or not end_date:
+            start_date = fields.Date.today()
+            end_date = fields.Date.today() + timedelta(days=30)
+        
         room_types = self.search([])
         summary = {
             'total_room_types': len(room_types),
@@ -170,21 +176,28 @@ class HotelRoomType(models.Model):
         }
         
         for room_type in room_types:
-            available_rooms = self.env['hotel.room'].get_available_rooms(
-                start_date, end_date, room_type.id
-            )
-            
-            room_type_data = {
-                'room_type_id': room_type.id,
-                'name': room_type.name,
-                'code': room_type.code,
-                'total_rooms': room_type.room_count,
-                'available_rooms': len(available_rooms),
-                'availability_rate': (len(available_rooms) / room_type.room_count * 100) if room_type.room_count > 0 else 0,
-            }
-            
-            summary['room_types'].append(room_type_data)
-            summary['available_rooms'] += len(available_rooms)
+            try:
+                available_rooms = self.env['hotel.room'].get_available_rooms(
+                    start_date, end_date, room_type.id
+                )
+                
+                room_type_data = {
+                    'room_type_id': room_type.id,
+                    'name': room_type.name,
+                    'code': room_type.code,
+                    'total_rooms': room_type.room_count,
+                    'available_rooms': len(available_rooms),
+                    'availability_rate': (len(available_rooms) / room_type.room_count * 100) if room_type.room_count > 0 else 0,
+                }
+                
+                summary['room_types'].append(room_type_data)
+                summary['available_rooms'] += len(available_rooms)
+            except Exception as e:
+                # Log error but continue with other room types
+                import logging
+                _logger = logging.getLogger(__name__)
+                _logger.warning(f"Error processing room type {room_type.name}: {e}")
+                continue
         
         # Calculate total hotel availability percentage
         if summary['total_rooms'] > 0:

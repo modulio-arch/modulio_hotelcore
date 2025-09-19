@@ -55,9 +55,16 @@ class HotelDashboard extends Component {
             }
 
             // Fetch room types summary from model method
-            const summary = await this.orm.call("hotel.room.type", "get_room_type_availability_summary", [ctx.start_date || false, ctx.end_date || false]);
-            if (this.state) {
-                this.state.roomTypes = summary.room_types || [];
+            try {
+                const summary = await this.orm.call("hotel.room.type", "get_room_type_availability_summary", [ctx.start_date || false, ctx.end_date || false]);
+                if (this.state) {
+                    this.state.roomTypes = summary.room_types || [];
+                }
+            } catch (error) {
+                console.error("Error fetching room types summary:", error);
+                if (this.state) {
+                    this.state.roomTypes = [];
+                }
             }
 
             // load room type options
@@ -99,8 +106,17 @@ class HotelDashboard extends Component {
             }
         } catch (error) {
             console.error("Error loading dashboard data:", error);
+            console.error("Error details:", {
+                message: error.message,
+                data: error.data,
+                name: error.name
+            });
             if (this.state) {
                 this.state.loading = false;
+                // Set default values to prevent UI errors
+                this.state.kpi = { total: 0, available: 0, occupied: 0, reserved: 0, dirty: 0, inspected: 0, event: 0, oos: 0 };
+                this.state.roomTypes = [];
+                this.state.rooms = [];
             }
         }
     }
