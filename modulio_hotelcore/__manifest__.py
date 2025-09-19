@@ -24,6 +24,7 @@ This module is essential for Front Office and Housekeeping modules as they depen
         'security/hotel_security.xml',
         'security/ir.model.access.csv',
         'data/hotel_demo_data.xml',
+        'views/res_config_settings_view.xml',
         'views/hotel_room_type_views.xml',
         'views/hotel_room_views.xml',
         'views/hotel_room_blocking_views.xml',
