@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Room Blockings Calendar View -->
+        <record id="view_hotel_room_blocking_calendar" model="ir.ui.view">
+            <field name="name">hotel.room.blocking.calendar</field>
+            <field name="model">hotel.room.blocking</field>
+            <field name="arch" type="xml">
+                <calendar string="Room Blockings Calendar" 
+                         date_start="start_date" 
+                         date_stop="end_date"
+                         color="blocking_type">
+                    <field name="name"/>
+                    <field name="room_id"/>
+                    <field name="blocking_type"/>
+                    <field name="status"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Room Availability Calendar View -->
+        <record id="view_hotel_room_availability_calendar" model="ir.ui.view">
+            <field name="name">hotel.room.availability.calendar</field>
+            <field name="model">hotel.room</field>
+            <field name="arch" type="xml">
+                <calendar string="Room Availability Calendar" 
+                         date_start="create_date" 
+                         color="status"
+                         event_open_popup="true">
+                    <field name="room_number"/>
+                    <field name="room_type_id"/>
+                    <field name="status"/>
+                    <field name="maintenance_required"/>
+                    <field name="floor"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Room Availability Kanban View -->
+        <record id="view_hotel_room_availability_kanban" model="ir.ui.view">
+            <field name="name">hotel.room.availability.kanban</field>
+            <field name="model">hotel.room</field>
+            <field name="arch" type="xml">
+                <kanban string="Room Status Overview" class="o_kanban_small_column">
+                    <field name="room_number"/>
+                    <field name="floor"/>
+                    <field name="room_type_id"/>
+                    <field name="status"/>
+                    <field name="maintenance_required"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click" 
+                                 t-att-class="'oe_kanban_card_' + record.status.raw_value">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                Room <field name="room_number"/>
+                                            </strong>
+                                            <div class="o_kanban_record_subtitle">
+                                                Floor <field name="floor"/> - <field name="room_type_id"/>
+                                            </div>
+                                        </div>
+                                        <div class="o_dropdown_kanban dropdown">
+                                            <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" aria-label="Dropdown menu" title="Dropdown menu">
+                                                <span class="fa fa-ellipsis-v"/>
+                                            </a>
+                                            <div class="dropdown-menu" role="menu">
+                                                <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                                <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div class="o_kanban_record_bottom">
+                                            <div class="oe_kanban_bottom_left">
+                                                <span class="badge badge-pill" 
+                                                      t-att-class="'badge-' + (record.status.raw_value == 'vacant_ready' ? 'success' : record.status.raw_value == 'occupied' ? 'warning' : record.status.raw_value == 'dirty' ? 'warning' : record.status.raw_value == 'out_of_service' ? 'danger' : 'secondary')">
+                                                    <field name="status"/>
+                                                </span>
+                                            </div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <span t-if="record.maintenance_required.raw_value" 
+                                                      class="fa fa-wrench text-warning" 
+                                                      title="Maintenance Required"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Room Availability Search View -->
+        <record id="view_hotel_room_availability_search" model="ir.ui.view">
+            <field name="name">hotel.room.availability.search</field>
+            <field name="model">hotel.room</field>
+            <field name="arch" type="xml">
+                <search string="Room Availability">
+                    <field name="room_number"/>
+                    <field name="room_type_id"/>
+                    <field name="status"/>
+                    <field name="floor"/>
+                    <field name="last_status_change" string="From (Last Status Change)" filter_domain="[('last_status_change', '&gt;=', self)]"/>
+                    <field name="last_status_change" string="To (Last Status Change)" filter_domain="[('last_status_change', '&lt;=', self)]"/>
+                    <separator/>
+                    <filter string="Available" name="available" 
+                            domain="[('status', 'in', ['vacant_ready', 'inspected'])]"/>
+                    <filter string="Occupied" name="occupied" 
+                            domain="[('status', '=', 'occupied')]"/>
+                    <filter string="Reserved" name="reserved" 
+                            domain="[('status', '=', 'reserved')]"/>
+                    <filter string="Dirty" name="dirty" 
+                            domain="[('status', '=', 'dirty')]"/>
+                    <filter string="Out of Service" name="out_of_service" 
+                            domain="[('status', '=', 'out_of_service')]"/>
+                    <separator/>
+                    <filter string="Maintenance Required" name="maintenance" 
+                            domain="[('maintenance_required', '=', True)]"/>
+                    <separator/>
+                    <filter string="Today" name="today" 
+                            domain="[('last_status_change', '>=', context_today())]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Room Type" name="group_room_type" context="{'group_by': 'room_type_id'}"/>
+                        <filter string="Floor" name="group_floor" context="{'group_by': 'floor'}"/>
+                        <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Room Availability Action -->
+        <record id="action_hotel_room_availability_act_window" model="ir.actions.act_window">
+            <field name="name">Room Availability</field>
+            <field name="res_model">hotel.room</field>
+            <field name="view_mode">list,calendar,kanban,form</field>
+            <field name="search_view_id" ref="view_hotel_room_availability_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Welcome to Room Availability!
+                </p>
+                <p>
+                    This view shows the availability status of all rooms in your hotel.
+                    Use the kanban view for a quick overview of room status.
+                </p>
+            </field>
+        </record>
+
+        <!-- Room Blockings Action -->
+        <record id="action_hotel_room_blocking_availability_act_window" model="ir.actions.act_window">
+            <field name="name">Room Blockings</field>
+            <field name="res_model">hotel.room.blocking</field>
+            <field name="view_mode">calendar,list,form</field>
+            <field name="search_view_id" ref="view_hotel_room_blocking_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Welcome to Room Blockings!
+                </p>
+                <p>
+                    This view shows the room blockings in your hotel.
+                    Use the calendar view to see room blockings over time.
+                </p>
+            </field>
+        </record>
+
+        <!-- Room Availability Filter Action -->
+        <record id="action_hotel_room_availability_filter" model="ir.actions.act_window">
+            <field name="name">Filter Room Availability</field>
+            <field name="res_model">hotel.room.availability.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{}</field>
+            <!-- Bind to appear in Action menu on hotel.room views -->
+            <field name="binding_model_id" ref="model_hotel_room"/>
+            <field name="binding_type">action</field>
+        </record>
+
+    </data>
+</odoo>

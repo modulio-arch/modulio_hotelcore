@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Modulio Hotel Category -->
+        <record id="module_category_modulio_hotel" model="ir.module.category">
+            <field name="name">Modulio Hotel</field>
+            <field name="description">Hotel management by Modulio</field>
+            <field name="sequence">100</field>
+        </record>
+        
+        <!-- Hotel User Group -->
+        <record id="group_hotel_user" model="res.groups">
+            <field name="name">Hotel User</field>
+            <field name="category_id" ref="module_category_modulio_hotel"/>
+            <field name="comment">Basic hotel operations access</field>
+        </record>
+
+        <!-- Hotel Manager Group -->
+        <record id="group_hotel_manager" model="res.groups">
+            <field name="name">Hotel Manager</field>
+            <field name="category_id" ref="module_category_modulio_hotel"/>
+            <field name="comment">Full hotel management access</field>
+            <field name="implied_ids" eval="[(4, ref('group_hotel_user'))]"/>
+        </record>
+
+        <!-- Access Rights for Hotel Room Type -->
+        <record id="access_hotel_room_type_user" model="ir.model.access">
+            <field name="name">hotel.room.type.user</field>
+            <field name="model_id" ref="model_hotel_room_type"/>
+            <field name="group_id" ref="group_hotel_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="access_hotel_room_type_manager" model="ir.model.access">
+            <field name="name">hotel.room.type.manager</field>
+            <field name="model_id" ref="model_hotel_room_type"/>
+            <field name="group_id" ref="group_hotel_manager"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Access Rights for Hotel Room -->
+        <record id="access_hotel_room_user" model="ir.model.access">
+            <field name="name">hotel.room.user</field>
+            <field name="model_id" ref="model_hotel_room"/>
+            <field name="group_id" ref="group_hotel_user"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="access_hotel_room_manager" model="ir.model.access">
+            <field name="name">hotel.room.manager</field>
+            <field name="model_id" ref="model_hotel_room"/>
+            <field name="group_id" ref="group_hotel_manager"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

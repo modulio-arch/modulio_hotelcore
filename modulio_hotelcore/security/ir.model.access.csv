@@ -5,3 +5,5 @@ access_hotel_room_user,hotel.room.user,model_hotel_room,group_hotel_user,1,1,0,0
 access_hotel_room_manager,hotel.room.manager,model_hotel_room,group_hotel_manager,1,1,1,1
 access_hotel_room_blocking_user,hotel.room.blocking.user,model_hotel_room_blocking,group_hotel_user,1,1,1,0
 access_hotel_room_blocking_manager,hotel.room.blocking.manager,model_hotel_room_blocking,group_hotel_manager,1,1,1,1
+access_hotel_room_availability_wizard_user,hotel.room.availability.wizard.user,model_hotel_room_availability_wizard,group_hotel_user,1,1,1,1
+access_hotel_room_availability_wizard_manager,hotel.room.availability.wizard.manager,model_hotel_room_availability_wizard,group_hotel_manager,1,1,1,1

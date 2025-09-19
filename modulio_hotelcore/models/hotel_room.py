@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 
@@ -43,36 +43,17 @@ class HotelRoom(models.Model):
         string='Description',
         help='Additional description for the room'
     )
-    
-    # New simplified core states (Front Office focus): occupancy_state
-    occupancy_state = fields.Selection([
-        ('available', 'Available'),
+    status = fields.Selection([
+        ('vacant_ready', 'Vacant Ready'),
         ('reserved', 'Reserved'),
         ('occupied', 'Occupied'),
-    ],
-        string='Occupancy State',
-        default='available',
-        required=True,
-        index=True,
-        tracking=True,
-        help='Core room occupancy state used by Front Office and integrations'
-    )
-
-    # New simplified housekeeping state (Housekeeping focus)
-    housekeeping_state = fields.Selection([
         ('dirty', 'Dirty'),
-        ('clean', 'Clean'),
         ('inspected', 'Inspected'),
+        ('event', 'Event'),
         ('out_of_service', 'Out of Service'),
-    ],
-        string='Housekeeping State',
-        default='inspected',
-        required=True,
-        index=True,
-        tracking=True,
-        help='Housekeeping cleanliness and service state used by housekeeping workflows'
-    )
-
+    ], string='Status', default='vacant_ready', required=True,
+       tracking=True, help='Current status of the room')
+    
     # Status transition fields
     last_status_change = fields.Datetime(
         string='Last Status Change',
@@ -182,157 +163,66 @@ class HotelRoom(models.Model):
     def create(self, vals_list):
         """Override create to set last_status_change"""
         for vals in vals_list:
-            if 'occupancy_state' in vals or 'housekeeping_state' in vals:
+            if 'status' in vals:
                 vals['last_status_change'] = fields.Datetime.now()
-        
         return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track status changes"""
-        if 'occupancy_state' in vals or 'housekeeping_state' in vals:
+        if 'status' in vals:
             vals['last_status_change'] = fields.Datetime.now()
-        
         return super().write(vals)
 
-
-    # -----------------------------
-    # New helpers for simplified states
-    # -----------------------------
-
-    def set_occupancy_state(self, new_state: str) -> None:
-        """Set occupancy_state to one of: available, reserved, occupied.
-        Does not manage transitions yet; validation is intentionally light here.
-        """
+    def action_change_status(self, new_status, reason=''):
+        """Change room status with validation"""
         self.ensure_one()
-        allowed = {'available', 'reserved', 'occupied'}
-        if new_state not in allowed:
-            raise ValidationError(f"Invalid occupancy_state: {new_state}")
-        self.write({'occupancy_state': new_state})
-
-    def set_housekeeping_state(self, new_state: str) -> None:
-        """Set housekeeping_state to one of: dirty, clean, inspected, out_of_service."""
-        self.ensure_one()
-        allowed = {'dirty', 'clean', 'inspected', 'out_of_service'}
-        if new_state not in allowed:
-            raise ValidationError(f"Invalid housekeeping_state: {new_state}")
-        self.write({'housekeeping_state': new_state})
-
-    def mark_dirty(self) -> None:
-        self.set_housekeeping_state('dirty')
-
-    def mark_clean(self) -> None:
-        self.set_housekeeping_state('clean')
-
-    def mark_inspected(self) -> None:
-        self.set_housekeeping_state('inspected')
-
-    def mark_out_of_service(self) -> None:
-        self.set_housekeeping_state('out_of_service')
-
-    # -----------------------------
-    # New simplified transition methods for Front Office and Housekeeping
-    # -----------------------------
-
-    def action_check_in(self, guest_name='', notes=''):
-        """Check-in: reserved -> occupied, housekeeping -> dirty"""
-        self.ensure_one()
-        if self.occupancy_state != 'reserved':
-            raise ValidationError(f"Room must be reserved to check-in. Current state: {self.occupancy_state}")
+        
+        # Validate status transition
+        valid_transitions = {
+            'vacant_ready': ['reserved', 'out_of_service'],
+            'reserved': ['occupied', 'vacant_ready', 'out_of_service'],
+            'occupied': ['dirty', 'out_of_service'],
+            'dirty': ['inspected', 'out_of_service'],
+            'inspected': ['vacant_ready', 'dirty', 'out_of_service'],
+            'out_of_service': ['vacant_ready', 'dirty', 'inspected'],
+        }
+        
+        current_status = self.status
+        if new_status not in valid_transitions.get(current_status, []):
+            raise ValidationError(
+                f"Cannot change status from {current_status} to {new_status}. "
+                f"Valid transitions from {current_status} are: {', '.join(valid_transitions.get(current_status, []))}"
+            )
         
         self.write({
-            'occupancy_state': 'occupied',
-            'housekeeping_state': 'dirty',
-            'status_change_reason': f"Check-in: {guest_name}. {notes}",
+            'status': new_status,
+            'status_change_reason': reason,
             'last_status_change': fields.Datetime.now()
         })
 
-    def action_check_out(self, guest_name='', notes=''):
-        """Check-out: occupied -> available, housekeeping -> dirty"""
-        self.ensure_one()
-        if self.occupancy_state != 'occupied':
-            raise ValidationError(f"Room must be occupied to check-out. Current state: {self.occupancy_state}")
-        
-        self.write({
-            'occupancy_state': 'available',
-            'housekeeping_state': 'dirty',
-            'status_change_reason': f"Check-out: {guest_name}. {notes}",
-            'last_status_change': fields.Datetime.now()
-        })
+    def action_vacant_ready(self):
+        """Set room to Vacant Ready status"""
+        self.action_change_status('vacant_ready', 'Room cleaned and ready for guests')
 
-    def action_reserve(self, guest_name='', notes=''):
-        """Reserve: available -> reserved"""
-        self.ensure_one()
-        if self.occupancy_state != 'available':
-            raise ValidationError(f"Room must be available to reserve. Current state: {self.occupancy_state}")
-        
-        self.write({
-            'occupancy_state': 'reserved',
-            'status_change_reason': f"Reserved: {guest_name}. {notes}",
-            'last_status_change': fields.Datetime.now()
-        })
+    def action_reserved(self):
+        """Set room to Reserved status"""
+        self.action_change_status('reserved', 'Room reserved for guest')
 
-    def action_cancel_reservation(self, reason=''):
-        """Cancel reservation: reserved -> available"""
-        self.ensure_one()
-        if self.occupancy_state != 'reserved':
-            raise ValidationError(f"Room must be reserved to cancel. Current state: {self.occupancy_state}")
-        
-        self.write({
-            'occupancy_state': 'available',
-            'status_change_reason': f"Reservation cancelled: {reason}",
-            'last_status_change': fields.Datetime.now()
-        })
+    def action_occupied(self):
+        """Set room to Occupied status"""
+        self.action_change_status('occupied', 'Guest checked in')
 
-    def action_housekeeping_clean(self, notes=''):
-        """Housekeeping: dirty -> clean"""
-        self.ensure_one()
-        if self.housekeeping_state != 'dirty':
-            raise ValidationError(f"Room must be dirty to clean. Current state: {self.housekeeping_state}")
-        
-        self.write({
-            'housekeeping_state': 'clean',
-            'status_change_reason': f"Cleaned: {notes}",
-            'last_status_change': fields.Datetime.now()
-        })
+    def action_dirty(self):
+        """Set room to Dirty status"""
+        self.action_change_status('dirty', 'Guest checked out, room needs cleaning')
 
-    def action_housekeeping_inspect(self, notes=''):
-        """Housekeeping: clean -> inspected"""
-        self.ensure_one()
-        if self.housekeeping_state != 'clean':
-            raise ValidationError(f"Room must be clean to inspect. Current state: {self.housekeeping_state}")
-        
-        self.write({
-            'housekeeping_state': 'inspected',
-            'status_change_reason': f"Inspected: {notes}",
-            'last_status_change': fields.Datetime.now()
-        })
+    def action_inspected(self):
+        """Set room to Inspected status"""
+        self.action_change_status('inspected', 'Room inspected after cleaning')
 
-    def is_sellable(self) -> bool:
-        """Check if room is sellable based on occupancy_state, housekeeping_state and blocking."""
-        self.ensure_one()
-        
-        # Room must be available for occupancy
-        if self.occupancy_state != 'available':
-            return False
-        
-        # Room must not be out of service in housekeeping
-        if self.housekeeping_state == 'out_of_service':
-            return False
-        
-        # Honor housekeeping policy
-        require_inspected = self.env['ir.config_parameter'].sudo().get_param(
-            'modulio_hotelcore.require_inspected_to_sell', 'False'
-        ) == 'True'
-        if require_inspected and self.housekeeping_state != 'inspected':
-            return False
-        
-        # Check for active blockings
-        active_blockings = self.blocking_ids.filtered(lambda b: b.status == 'active')
-        if active_blockings:
-            return False
-        
-        return True
-
+    def action_out_of_service(self):
+        """Set room to Out of Service status"""
+        self.action_change_status('out_of_service', 'Room taken out of service for maintenance')
 
     @api.constrains('room_number', 'floor')
     def _check_room_number_unique(self):
@@ -358,32 +248,19 @@ class HotelRoom(models.Model):
             self.id, start_date, end_date
         )
         
-        # Check room availability using new states
-        occupancy_available = self.occupancy_state == 'available'
-        housekeeping_ready = self.housekeeping_state == 'inspected'
-        not_out_of_service = self.housekeeping_state != 'out_of_service'
-        
-        # Housekeeping policy via config: require inspected to sell
-        require_inspected = self.env['ir.config_parameter'].sudo().get_param(
-            'modulio_hotelcore.require_inspected_to_sell', 'False'
-        ) == 'True'
-        hk_ok = housekeeping_ready if require_inspected else True
-
-        # Room is available if occupancy is available, not out of service, not blocked, and housekeeping policy passes
-        available = occupancy_available and not_out_of_service and blocking['available'] and hk_ok
+        # Check room status
+        status_available = self.status in ['vacant_ready', 'inspected']
         
         return {
             'room_id': self.id,
             'room_number': self.room_number,
             'room_type_id': self.room_type_id.id,
             'room_type_name': self.room_type_id.name,
-            'occupancy_state': self.occupancy_state,
-            'housekeeping_state': self.housekeeping_state,
-            'occupancy_available': occupancy_available,
-            'housekeeping_ready': housekeeping_ready,
+            'status': self.status,
+            'status_available': status_available,
             'not_blocked': blocking['available'],
             'blockings': blocking['blockings'],
-            'available': available,
+            'available': status_available and blocking['available'],
             'floor': self.floor,
             'max_occupancy': self.max_occupancy,
         }
@@ -400,8 +277,7 @@ class HotelRoom(models.Model):
             'start': start_date,
             'end': end_date,
             'color': self._get_calendar_color(),
-            'occupancy_state': self.occupancy_state,
-            'housekeeping_state': self.housekeeping_state,
+            'status': self.status,
             'available': availability['available'],
             'blockings': availability['blockings'],
             'room_number': self.room_number,
@@ -410,18 +286,16 @@ class HotelRoom(models.Model):
         }
 
     def _get_calendar_color(self):
-        """Get color for calendar display based on occupancy_state and housekeeping_state"""
-        # If housekeeping is out of service, show red regardless of occupancy
-        if self.housekeeping_state == 'out_of_service':
-            return '#dc3545'  # Red
-        
-        # Otherwise use occupancy state color
+        """Get color for calendar display based on room status"""
         color_map = {
-            'available': '#28a745',      # Green
-            'reserved': '#17a2b8',       # Blue
-            'occupied': '#ffc107',       # Yellow
+            'vacant_ready': '#28a745',      # Green
+            'reserved': '#17a2b8',          # Blue
+            'occupied': '#ffc107',          # Yellow
+            'dirty': '#fd7e14',             # Orange
+            'inspected': '#6c757d',         # Gray
+            'out_of_service': '#dc3545',    # Red
         }
-        return color_map.get(self.occupancy_state, '#6c757d')
+        return color_map.get(self.status, '#6c757d')
 
     @api.model
     def get_rooms_availability_calendar(self, start_date, end_date, room_type_id=None, floor=None):
@@ -455,27 +329,14 @@ class HotelRoom(models.Model):
             'context': {'default_room_id': self.id},
         }
 
-    def action_calendar_drop(self, new_occupancy_state, start_date, end_date, reason=''):
-        """Handle drag & drop in calendar view to change room occupancy state or create blocking"""
+    def action_calendar_drop(self, new_status, start_date, end_date, reason=''):
+        """Handle drag & drop in calendar view to change room status or create blocking"""
         self.ensure_one()
         
-        if new_occupancy_state in ['available', 'reserved', 'occupied']:
-            # Change room occupancy state
-            self.set_occupancy_state(new_occupancy_state)
-            if reason:
-                self.write({
-                    'status_change_reason': reason,
-                    'last_status_change': fields.Datetime.now()
-                })
-        elif new_occupancy_state == 'out_of_service':
-            # Set housekeeping state to out of service
-            self.mark_out_of_service()
-            if reason:
-                self.write({
-                    'status_change_reason': reason,
-                    'last_status_change': fields.Datetime.now()
-                })
-        elif new_occupancy_state == 'blocked':
+        if new_status in ['vacant_ready', 'reserved', 'occupied', 'dirty', 'inspected', 'out_of_service']:
+            # Change room status
+            self.action_change_status(new_status, reason)
+        elif new_status == 'blocked':
             # Create room blocking
             blocking_vals = {
                 'name': f'Blocking for {self.room_number}',
@@ -516,8 +377,6 @@ class HotelRoom(models.Model):
                     'max_occupancy': room.max_occupancy,
                     'base_price': room.base_price,
                     'currency_id': room.currency_id.id,
-                    'occupancy_state': room.occupancy_state,
-                    'housekeeping_state': room.housekeeping_state,
                 })
         
         return available_rooms
@@ -542,15 +401,13 @@ class HotelRoom(models.Model):
         if not room.check_room_availability(room_id, start_date, end_date):
             raise ValidationError(f"Room {room.room_number} is not available for the selected dates")
         
-        # Use new simplified reservation method
-        room.action_reserve(guest_name, notes)
+        # Change room status to reserved
+        room.action_change_status('reserved', f"Reserved for {guest_name}. {notes}")
         
         return {
             'success': True,
             'room_number': room.room_number,
             'room_type': room.room_type_id.name,
-            'occupancy_state': room.occupancy_state,
-            'housekeeping_state': room.housekeeping_state,
             'message': f"Room {room.room_number} has been reserved successfully"
         }
 

@@ -165,7 +165,6 @@ class HotelRoomType(models.Model):
             'total_room_types': len(room_types),
             'total_rooms': sum(rt.room_count for rt in room_types),
             'available_rooms': 0,
-            'total_availability_rate': 0,
             'room_types': []
         }
         
@@ -185,10 +184,6 @@ class HotelRoomType(models.Model):
             
             summary['room_types'].append(room_type_data)
             summary['available_rooms'] += len(available_rooms)
-        
-        # Calculate total hotel availability percentage
-        if summary['total_rooms'] > 0:
-            summary['total_availability_rate'] = (summary['available_rooms'] / summary['total_rooms']) * 100
         
         return summary
 

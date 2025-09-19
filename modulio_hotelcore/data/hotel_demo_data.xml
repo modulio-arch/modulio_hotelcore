@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Room Types Demo Data -->
+        <record id="room_type_single" model="hotel.room.type">
+            <field name="name">Single Room</field>
+            <field name="code">SGL</field>
+            <field name="description">Comfortable single room with basic amenities</field>
+            <field name="max_occupancy">1</field>
+            <field name="base_price">150000</field>
+            <field name="amenities">Air conditioning, WiFi, TV, Mini bar, Private bathroom</field>
+        </record>
+
+        <record id="room_type_double" model="hotel.room.type">
+            <field name="name">Double Room</field>
+            <field name="code">DBL</field>
+            <field name="description">Spacious double room perfect for couples</field>
+            <field name="max_occupancy">2</field>
+            <field name="base_price">250000</field>
+            <field name="amenities">Air conditioning, WiFi, TV, Mini bar, Private bathroom, Balcony</field>
+        </record>
+
+        <record id="room_type_twin" model="hotel.room.type">
+            <field name="name">Twin Room</field>
+            <field name="code">TWN</field>
+            <field name="description">Twin beds room ideal for friends or business travelers</field>
+            <field name="max_occupancy">2</field>
+            <field name="base_price">220000</field>
+            <field name="amenities">Air conditioning, WiFi, TV, Mini bar, Private bathroom, Work desk</field>
+        </record>
+
+        <record id="room_type_suite" model="hotel.room.type">
+            <field name="name">Suite</field>
+            <field name="code">SUITE</field>
+            <field name="description">Luxurious suite with separate living area</field>
+            <field name="max_occupancy">4</field>
+            <field name="base_price">500000</field>
+            <field name="amenities">Air conditioning, WiFi, TV, Mini bar, Private bathroom, Balcony, Living room, Kitchenette, Room service</field>
+        </record>
+
+        <record id="room_type_family" model="hotel.room.type">
+            <field name="name">Family Room</field>
+            <field name="code">FAM</field>
+            <field name="description">Large family room with multiple beds</field>
+            <field name="max_occupancy">4</field>
+            <field name="base_price">350000</field>
+            <field name="amenities">Air conditioning, WiFi, TV, Mini bar, Private bathroom, Balcony, Extra beds available</field>
+        </record>
+
+        <!-- Single Rooms (SGL) - 10 rooms -->
+        <record id="room_sgl_101" model="hotel.room">
+            <field name="room_number">101</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">1</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <record id="room_sgl_102" model="hotel.room">
+            <field name="room_number">102</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">1</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <record id="room_sgl_103" model="hotel.room">
+            <field name="room_number">103</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">1</field>
+            <field name="status">dirty</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <record id="room_sgl_104" model="hotel.room">
+            <field name="room_number">104</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">1</field>
+            <field name="status">reserved</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <record id="room_sgl_105" model="hotel.room">
+            <field name="room_number">105</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">1</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <record id="room_sgl_201" model="hotel.room">
+            <field name="room_number">201</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">2</field>
+            <field name="status">inspected</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <record id="room_sgl_202" model="hotel.room">
+            <field name="room_number">202</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">2</field>
+            <field name="status">out_of_service</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <record id="room_sgl_203" model="hotel.room">
+            <field name="room_number">203</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">2</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <record id="room_sgl_204" model="hotel.room">
+            <field name="room_number">204</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">2</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <record id="room_sgl_205" model="hotel.room">
+            <field name="room_number">205</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">2</field>
+            <field name="status">dirty</field>
+            <field name="max_occupancy">1</field>
+        </record>
+
+        <!-- Double Rooms (DBL) - 10 rooms -->
+        <record id="room_dbl_301" model="hotel.room">
+            <field name="room_number">301</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">3</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_dbl_302" model="hotel.room">
+            <field name="room_number">302</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">3</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_dbl_303" model="hotel.room">
+            <field name="room_number">303</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">3</field>
+            <field name="status">reserved</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_dbl_304" model="hotel.room">
+            <field name="room_number">304</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">3</field>
+            <field name="status">dirty</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_dbl_305" model="hotel.room">
+            <field name="room_number">305</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">3</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_dbl_401" model="hotel.room">
+            <field name="room_number">401</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">4</field>
+            <field name="status">inspected</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_dbl_402" model="hotel.room">
+            <field name="room_number">402</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">4</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_dbl_403" model="hotel.room">
+            <field name="room_number">403</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">4</field>
+            <field name="status">out_of_service</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_dbl_404" model="hotel.room">
+            <field name="room_number">404</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">4</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_dbl_405" model="hotel.room">
+            <field name="room_number">405</field>
+            <field name="room_type_id" ref="room_type_double"/>
+            <field name="floor">4</field>
+            <field name="status">reserved</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <!-- Twin Rooms (TWN) - 10 rooms -->
+        <record id="room_twn_501" model="hotel.room">
+            <field name="room_number">501</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">5</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_twn_502" model="hotel.room">
+            <field name="room_number">502</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">5</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_twn_503" model="hotel.room">
+            <field name="room_number">503</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">5</field>
+            <field name="status">dirty</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_twn_504" model="hotel.room">
+            <field name="room_number">504</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">5</field>
+            <field name="status">reserved</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_twn_505" model="hotel.room">
+            <field name="room_number">505</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">5</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_twn_601" model="hotel.room">
+            <field name="room_number">601</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">6</field>
+            <field name="status">inspected</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_twn_602" model="hotel.room">
+            <field name="room_number">602</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">6</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_twn_603" model="hotel.room">
+            <field name="room_number">603</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">6</field>
+            <field name="status">out_of_service</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_twn_604" model="hotel.room">
+            <field name="room_number">604</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">6</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <record id="room_twn_605" model="hotel.room">
+            <field name="room_number">605</field>
+            <field name="room_type_id" ref="room_type_twin"/>
+            <field name="floor">6</field>
+            <field name="status">reserved</field>
+            <field name="max_occupancy">2</field>
+        </record>
+
+        <!-- Suite Rooms (SUITE) - 10 rooms -->
+        <record id="room_suite_701" model="hotel.room">
+            <field name="room_number">701</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">7</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_suite_702" model="hotel.room">
+            <field name="room_number">702</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">7</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_suite_703" model="hotel.room">
+            <field name="room_number">703</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">7</field>
+            <field name="status">reserved</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_suite_704" model="hotel.room">
+            <field name="room_number">704</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">7</field>
+            <field name="status">dirty</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_suite_705" model="hotel.room">
+            <field name="room_number">705</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">7</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_suite_801" model="hotel.room">
+            <field name="room_number">801</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">8</field>
+            <field name="status">inspected</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_suite_802" model="hotel.room">
+            <field name="room_number">802</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">8</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_suite_803" model="hotel.room">
+            <field name="room_number">803</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">8</field>
+            <field name="status">out_of_service</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_suite_804" model="hotel.room">
+            <field name="room_number">804</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">8</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_suite_805" model="hotel.room">
+            <field name="room_number">805</field>
+            <field name="room_type_id" ref="room_type_suite"/>
+            <field name="floor">8</field>
+            <field name="status">reserved</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <!-- Family Rooms (FAM) - 10 rooms -->
+        <record id="room_fam_901" model="hotel.room">
+            <field name="room_number">901</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">9</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_fam_902" model="hotel.room">
+            <field name="room_number">902</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">9</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_fam_903" model="hotel.room">
+            <field name="room_number">903</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">9</field>
+            <field name="status">reserved</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_fam_904" model="hotel.room">
+            <field name="room_number">904</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">9</field>
+            <field name="status">dirty</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_fam_905" model="hotel.room">
+            <field name="room_number">905</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">9</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_fam_1001" model="hotel.room">
+            <field name="room_number">1001</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">10</field>
+            <field name="status">inspected</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_fam_1002" model="hotel.room">
+            <field name="room_number">1002</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">10</field>
+            <field name="status">vacant_ready</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_fam_1003" model="hotel.room">
+            <field name="room_number">1003</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">10</field>
+            <field name="status">out_of_service</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_fam_1004" model="hotel.room">
+            <field name="room_number">1004</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">10</field>
+            <field name="status">occupied</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+        <record id="room_fam_1005" model="hotel.room">
+            <field name="room_number">1005</field>
+            <field name="room_type_id" ref="room_type_family"/>
+            <field name="floor">10</field>
+            <field name="status">reserved</field>
+            <field name="max_occupancy">4</field>
+        </record>
+
+    </data>
+</odoo>
