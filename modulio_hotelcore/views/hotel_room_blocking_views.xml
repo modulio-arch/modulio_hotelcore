@@ -34,7 +34,7 @@
                         <button name="action_complete" string="Complete" type="object" class="btn-success" 
                                 invisible="status != 'active'"/>
                         <button name="action_cancel" string="Cancel" type="object" class="btn-danger" 
-                                invisible="status in ['completed', 'cancelled']"/>
+                                invisible="status in ('completed','cancelled')"/>
                         <field name="status" widget="statusbar" statusbar_visible="planned,active,completed"/>
                     </header>
                     <sheet>

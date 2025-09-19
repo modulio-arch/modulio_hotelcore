@@ -302,6 +302,12 @@ class HotelRoomBlocking(models.Model):
     @api.model
     def get_room_availability(self, room_id, start_date, end_date):
         """Get room availability for a specific date range"""
+        # Graceful handling when dates are not provided
+        if not start_date or not end_date:
+            return {
+                'available': True,
+                'blockings': []
+            }
         domain = [
             ('room_id', '=', room_id),
             ('status', 'in', ['planned', 'active']),
