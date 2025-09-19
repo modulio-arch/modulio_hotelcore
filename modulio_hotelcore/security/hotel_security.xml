@@ -24,47 +24,7 @@
             <field name="implied_ids" eval="[(4, ref('group_hotel_user'))]"/>
         </record>
 
-        <!-- Access Rights for Hotel Room Type -->
-        <record id="access_hotel_room_type_user" model="ir.model.access">
-            <field name="name">hotel.room.type.user</field>
-            <field name="model_id" ref="model_hotel_room_type"/>
-            <field name="group_id" ref="group_hotel_user"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <record id="access_hotel_room_type_manager" model="ir.model.access">
-            <field name="name">hotel.room.type.manager</field>
-            <field name="model_id" ref="model_hotel_room_type"/>
-            <field name="group_id" ref="group_hotel_manager"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <!-- Access Rights for Hotel Room -->
-        <record id="access_hotel_room_user" model="ir.model.access">
-            <field name="name">hotel.room.user</field>
-            <field name="model_id" ref="model_hotel_room"/>
-            <field name="group_id" ref="group_hotel_user"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <record id="access_hotel_room_manager" model="ir.model.access">
-            <field name="name">hotel.room.manager</field>
-            <field name="model_id" ref="model_hotel_room"/>
-            <field name="group_id" ref="group_hotel_manager"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
+        <!-- Access rights are defined in security/ir.model.access.csv to avoid duplication -->
 
     </data>
 </odoo>

@@ -2,22 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Room Blockings Calendar View -->
-        <record id="view_hotel_room_blocking_calendar" model="ir.ui.view">
-            <field name="name">hotel.room.blocking.calendar</field>
-            <field name="model">hotel.room.blocking</field>
-            <field name="arch" type="xml">
-                <calendar string="Room Blockings Calendar" 
-                         date_start="start_date" 
-                         date_stop="end_date"
-                         color="blocking_type">
-                    <field name="name"/>
-                    <field name="room_id"/>
-                    <field name="blocking_type"/>
-                    <field name="status"/>
-                </calendar>
-            </field>
-        </record>
+        <!-- Removed duplicate Room Blockings Calendar View (defined in hotel_room_blocking_views.xml) -->
 
         <!-- Room Availability Calendar View -->
         <record id="view_hotel_room_availability_calendar" model="ir.ui.view">
