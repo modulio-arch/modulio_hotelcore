@@ -13,6 +13,12 @@
                         <div class="o_hotel_dashboard_last_updated" t-if="state.lastUpdated">
                             Last updated: <t t-esc="state.lastUpdated"/>
                         </div>
+                        <div class="o_hotel_dashboard_state_info" t-if="state.hasActiveFilters">
+                            <span class="badge badge-info">Active Filters: <t t-esc="getFilterSummary()"/></span>
+                        </div>
+                        <div class="o_hotel_dashboard_validation_errors" t-if="state.filterValidationErrors.length > 0">
+                            <span class="badge badge-warning">Validation Errors: <t t-esc="state.filterValidationErrors.length"/></span>
+                        </div>
                     </div>
                     <div>
                         <button type="button" class="btn btn-primary btn-sm" t-on-click="refreshData">
@@ -26,42 +32,58 @@
                 <div class="o_cp_buttons">
                     <div class="o_form_buttons_view">
                         <label>Occupancy:</label>
-                        <select name="occupancy_state" t-ref="occupancySelect">
+                        <select name="occupancy_state" 
+                                t-model="state.filters.occupancy_state"
+                                t-on-change="onOccupancyStateChange">
                             <option value="">All</option>
                             <option value="available">Available</option>
                             <option value="reserved">Reserved</option>
                             <option value="occupied">Occupied</option>
                         </select>
                         <label>Housekeeping:</label>
-                        <select name="housekeeping_state" t-ref="housekeepingSelect">
+                        <select name="housekeeping_state" 
+                                t-model="state.filters.housekeeping_state"
+                                t-on-change="onHousekeepingStateChange">
                             <option value="">All</option>
                             <option value="dirty">Dirty</option>
                             <option value="clean">Clean</option>
                             <option value="inspected">Inspected</option>
                             <option value="out_of_service">Out of Service</option>
                         </select>
-                                <label class="ms8">Room Type:</label>
-                                <select name="room_type_id" t-ref="roomTypeSelect">
-                                    <option value="">All</option>
-                                    <t t-foreach="state.roomTypeOptions" t-as="opt" t-key="opt.id">
-                                        <option t-att-value="opt.id" t-esc="opt.name"/>
-                                    </t>
-                                </select>
-                                <label class="ms8">Floor:</label>
-                                <input type="number" name="floor" t-ref="floorInput" placeholder="e.g. 1"/>
-                                <label class="ms8">Start:</label>
-                                <input type="date" name="start_date" t-ref="startDateInput"/>
-                                <label class="ms8">End:</label>
-                                <input type="date" name="end_date" t-ref="endDateInput"/>
-                                <button type="button" class="btn btn-primary btn-sm ms-2" t-on-click="applyFilters">
-                                    <i class="fa fa-search"/> Search
-                                </button>
-                                <button type="button" class="btn btn-secondary btn-sm ms-1" t-on-click="clearFilters">
-                                    <i class="fa fa-times"/> Clear
-                                </button>
-                            </div>
-                        </div>
+                        <label class="ms8">Room Type:</label>
+                        <select name="room_type_id" 
+                                t-model="state.filters.room_type_id"
+                                t-on-change="onRoomTypeChange">
+                            <option value="">All</option>
+                            <t t-foreach="state.roomTypeOptions" t-as="opt" t-key="opt.id">
+                                <option t-att-value="opt.id" t-esc="opt.name"/>
+                            </t>
+                        </select>
+                        <label class="ms8">Floor:</label>
+                        <input type="number" 
+                               name="floor" 
+                               t-model="state.filters.floor"
+                               t-on-change="onFloorChange"
+                               placeholder="e.g. 1"/>
+                        <label class="ms8">Start:</label>
+                        <input type="date" 
+                               name="start_date" 
+                               t-model="state.filters.start_date"
+                               t-on-change="onStartDateChange"/>
+                        <label class="ms8">End:</label>
+                        <input type="date" 
+                               name="end_date" 
+                               t-model="state.filters.end_date"
+                               t-on-change="onEndDateChange"/>
+                        <button type="button" class="btn btn-primary btn-sm ms-2" t-on-click="applyFilters">
+                            <i class="fa fa-search"/> Search
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm ms-1" t-on-click="clearFilters">
+                            <i class="fa fa-times"/> Clear
+                        </button>
                     </div>
+                </div>
+            </div>
 
                     <div class="o_hotel_dashboard_kpis o-flex o-row o-gutter">
                         <div class="o_kpi_card"><div class="o_kpi_value" t-esc="state.kpi.total"/>Total Rooms</div>
