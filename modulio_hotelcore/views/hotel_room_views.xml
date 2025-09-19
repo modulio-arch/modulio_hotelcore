@@ -145,7 +145,7 @@
                     <field name="maintenance_required"/>
                     <templates>
                         <t t-name="card">
-                            <div class="oe_kanban_card oe_kanban_global_click" t-att-class="'oe_kanban_card_' + record.status.raw_value">
+                            <div class="oe_kanban_card oe_kanban_global_click" t-att-class="'oe_kanban_card_' + record.occupancy_state.raw_value">
                                 <div class="oe_kanban_content">
                                     <div class="o_kanban_record_top">
                                         <div class="o_kanban_record_headings">
