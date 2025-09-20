@@ -51,13 +51,11 @@
                         </group>
                         <group>
                             <group>
-                                <field name="old_occupancy_state" readonly="1"/>
-                                <field name="old_housekeeping_state" readonly="1"/>
+                                <field name="old_state" readonly="1"/>
                                 <field name="old_maintenance_required" readonly="1"/>
                             </group>
                             <group>
-                                <field name="new_occupancy_state" readonly="1"/>
-                                <field name="new_housekeeping_state" readonly="1"/>
+                                <field name="new_state" readonly="1"/>
                                 <field name="new_maintenance_required" readonly="1"/>
                             </group>
                         </group>

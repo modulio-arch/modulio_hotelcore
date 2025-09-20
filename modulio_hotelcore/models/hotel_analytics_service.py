@@ -34,10 +34,15 @@ class HotelAnalyticsService(models.Model):
         
         return {
             'total_rooms': len(rooms),
-            'available_rooms': len(rooms.filtered(lambda r: r.occupancy_state == 'available' and r.housekeeping_state == 'inspected')),
-            'occupied_rooms': len(rooms.filtered(lambda r: r.occupancy_state == 'occupied')),
-            'reserved_rooms': len(rooms.filtered(lambda r: r.occupancy_state == 'reserved')),
-            'out_of_service_rooms': len(rooms.filtered(lambda r: r.housekeeping_state == 'out_of_service')),
+            'clean_rooms': len(rooms.filtered(lambda r: r.state == 'clean')),
+            'check_in_rooms': len(rooms.filtered(lambda r: r.state == 'check_in')),
+            'check_out_rooms': len(rooms.filtered(lambda r: r.state == 'check_out')),
+            'dirty_rooms': len(rooms.filtered(lambda r: r.state == 'dirty')),
+            'make_up_room_rooms': len(rooms.filtered(lambda r: r.state == 'make_up_room')),
+            'inspected_rooms': len(rooms.filtered(lambda r: r.state == 'inspected')),
+            'out_of_service_rooms': len(rooms.filtered(lambda r: r.state == 'out_of_service')),
+            'out_of_order_rooms': len(rooms.filtered(lambda r: r.state == 'out_of_order')),
+            'house_use_rooms': len(rooms.filtered(lambda r: r.state == 'house_use')),
         }
 
     def _get_revenue_metrics(self, start_date, end_date):

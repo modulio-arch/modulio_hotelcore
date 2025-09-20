@@ -19,6 +19,9 @@ access_hotel_room_type_user,hotel.room.type.user,model_hotel_room_type,group_hot
 access_hotel_room_type_manager,hotel.room.type.manager,model_hotel_room_type,group_hotel_manager,1,1,1,1
 access_hotel_room_user,hotel.room.user,model_hotel_room,group_hotel_user,1,1,0,0
 access_hotel_room_manager,hotel.room.manager,model_hotel_room,group_hotel_manager,1,1,1,1
+access_hotel_room_front_office,hotel.room.front_office,model_hotel_room,group_hotel_front_office,1,1,0,0
+access_hotel_room_housekeeping,hotel.room.housekeeping,model_hotel_room,group_hotel_housekeeping,1,1,0,0
+access_hotel_room_maintenance,hotel.room.maintenance,model_hotel_room,group_hotel_maintenance,1,1,0,0
 access_hotel_room_blocking_user,hotel.room.blocking.user,model_hotel_room_blocking,group_hotel_user,1,1,1,0
 access_hotel_room_blocking_manager,hotel.room.blocking.manager,model_hotel_room_blocking,group_hotel_manager,1,1,1,1
 access_hotel_room_availability_wizard_user,hotel.room.availability.wizard.user,model_hotel_room_availability_wizard,group_hotel_user,1,1,1,1

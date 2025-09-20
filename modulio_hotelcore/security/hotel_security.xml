@@ -24,6 +24,30 @@
             <field name="implied_ids" eval="[(4, ref('group_hotel_user'))]"/>
         </record>
 
+        <!-- Hotel Front Office Group -->
+        <record id="group_hotel_front_office" model="res.groups">
+            <field name="name">Hotel Front Office</field>
+            <field name="category_id" ref="module_category_modulio_hotel"/>
+            <field name="comment">Front Office operations: check-in, check-out, house use</field>
+            <field name="implied_ids" eval="[(4, ref('group_hotel_user'))]"/>
+        </record>
+
+        <!-- Hotel Housekeeping Group -->
+        <record id="group_hotel_housekeeping" model="res.groups">
+            <field name="name">Hotel Housekeeping</field>
+            <field name="category_id" ref="module_category_modulio_hotel"/>
+            <field name="comment">Housekeeping operations: cleaning, inspection, maintenance</field>
+            <field name="implied_ids" eval="[(4, ref('group_hotel_user'))]"/>
+        </record>
+
+        <!-- Hotel Maintenance Group -->
+        <record id="group_hotel_maintenance" model="res.groups">
+            <field name="name">Hotel Maintenance</field>
+            <field name="category_id" ref="module_category_modulio_hotel"/>
+            <field name="comment">Maintenance operations: light and heavy maintenance</field>
+            <field name="implied_ids" eval="[(4, ref('group_hotel_user'))]"/>
+        </record>
+
         <!-- Model Definitions for Access Rights -->
         <record id="model_hotel_floor" model="ir.model">
             <field name="name">hotel.floor</field>
@@ -91,6 +115,56 @@
         </record>
 
         <!-- Access rights are defined in security/ir.model.access.csv to avoid duplication -->
+
+        <!-- Record Rules for Hotel Room Access -->
+        <record id="rule_hotel_room_front_office" model="ir.rule">
+            <field name="name">Hotel Room: Front Office Access</field>
+            <field name="model_id" ref="model_hotel_room"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, ref('group_hotel_front_office'))]"/>
+        </record>
+
+        <record id="rule_hotel_room_housekeeping" model="ir.rule">
+            <field name="name">Hotel Room: Housekeeping Access</field>
+            <field name="model_id" ref="model_hotel_room"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, ref('group_hotel_housekeeping'))]"/>
+        </record>
+
+        <record id="rule_hotel_room_maintenance" model="ir.rule">
+            <field name="name">Hotel Room: Maintenance Access</field>
+            <field name="model_id" ref="model_hotel_room"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, ref('group_hotel_maintenance'))]"/>
+        </record>
+
+        <!-- Record Rules for Hotel Room Status History Access -->
+        <record id="rule_hotel_room_status_history_front_office" model="ir.rule">
+            <field name="name">Hotel Room Status History: Front Office Access</field>
+            <field name="model_id" ref="model_hotel_room_status_history"/>
+            <field name="domain_force">[('change_type', 'in', ['fo', 'system', 'other'])]</field>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, ref('group_hotel_front_office'))]"/>
+        </record>
+
+        <record id="rule_hotel_room_status_history_housekeeping" model="ir.rule">
+            <field name="name">Hotel Room Status History: Housekeeping Access</field>
+            <field name="model_id" ref="model_hotel_room_status_history"/>
+            <field name="domain_force">[('change_type', 'in', ['hk', 'mt', 'system', 'other'])]</field>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, ref('group_hotel_housekeeping'))]"/>
+        </record>
+
+        <record id="rule_hotel_room_status_history_maintenance" model="ir.rule">
+            <field name="name">Hotel Room Status History: Maintenance Access</field>
+            <field name="model_id" ref="model_hotel_room_status_history"/>
+            <field name="domain_force">[('change_type', 'in', ['mt', 'system', 'other'])]</field>
+            <field name="global" eval="False"/>
+            <field name="groups" eval="[(4, ref('group_hotel_maintenance'))]"/>
+        </record>
 
     </data>
 </odoo>

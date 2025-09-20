@@ -177,16 +177,16 @@ class HotelRoomBlocking(models.Model):
                         }
                         if new_type == 'event':
                             if event_closes_inventory:
-                                room_vals['housekeeping_state'] = 'out_of_service'
+                                room_vals['state'] = 'out_of_service'
                         else:
-                            room_vals['housekeeping_state'] = 'out_of_service'
+                            room_vals['state'] = 'out_of_service'
                         record.room_id.write(room_vals)
 
                 # Transition out of active (to planned/completed/cancelled) → reset housekeeping
                 if prev_status == 'active' and new_status != 'active':
                     if record.room_id:
                         record.room_id.write({
-                            'housekeeping_state': 'inspected',
+                            'state': 'inspected',
                             'blocking_type': False,
                             'blocking_reason': False,
                         })
@@ -199,14 +199,14 @@ class HotelRoomBlocking(models.Model):
                             'blocking_reason': record.reason or record.name,
                         }
                         if new_type == 'event':
-                            # If moving to event and config does not close inventory, clear housekeeping_state only if previously set by non-event
+                            # If moving to event and config does not close inventory, clear state only if previously set by non-event
                             if event_closes_inventory:
-                                room_vals['housekeeping_state'] = 'out_of_service'
+                                room_vals['state'] = 'out_of_service'
                             else:
-                                # do not change housekeeping_state
+                                # do not change state
                                 pass
                         else:
-                            room_vals['housekeeping_state'] = 'out_of_service'
+                            room_vals['state'] = 'out_of_service'
                         record.room_id.write(room_vals)
 
         return res
@@ -265,15 +265,15 @@ class HotelRoomBlocking(models.Model):
             
             event_closes_inventory = self._event_closes_inventory()
             if self.blocking_type == 'event':
-                # New housekeeping_state only changes if event closes inventory
+                # New state only changes if event closes inventory
                 if event_closes_inventory:
-                    room_vals['housekeeping_state'] = 'out_of_service'
-                    _logger.info(f"Room {self.room_id.room_number} housekeeping_state set to OUT OF SERVICE (event closes inventory) for blocking {self.name}")
+                    room_vals['state'] = 'out_of_service'
+                    _logger.info(f"Room {self.room_id.room_number} state set to OUT OF SERVICE (event closes inventory) for blocking {self.name}")
                 else:
-                    _logger.info(f"Room {self.room_id.room_number} housekeeping_state unchanged (event does not close inventory) for blocking {self.name}")
+                    _logger.info(f"Room {self.room_id.room_number} state unchanged (event does not close inventory) for blocking {self.name}")
             else:  # maintenance, out_of_order, renovation, other
-                room_vals['housekeeping_state'] = 'out_of_service'
-                _logger.info(f"Room {self.room_id.room_number} housekeeping set to OUT OF SERVICE for {self.blocking_type.upper()} blocking {self.name}")
+                room_vals['state'] = 'out_of_service'
+                _logger.info(f"Room {self.room_id.room_number} state set to OUT OF SERVICE for {self.blocking_type.upper()} blocking {self.name}")
             
             self.room_id.write(room_vals)
 
@@ -283,7 +283,7 @@ class HotelRoomBlocking(models.Model):
         # Return room to Inspected when blocking is completed
         if self.room_id:
             self.room_id.write({
-                'housekeeping_state': 'inspected',
+                'state': 'inspected',
                 'blocking_type': False,
                 'blocking_reason': False,
             })
@@ -294,7 +294,7 @@ class HotelRoomBlocking(models.Model):
         # Return room to Inspected when blocking is cancelled
         if self.room_id:
             self.room_id.write({
-                'housekeeping_state': 'inspected',
+                'state': 'inspected',
                 'blocking_type': False,
                 'blocking_reason': False,
             })

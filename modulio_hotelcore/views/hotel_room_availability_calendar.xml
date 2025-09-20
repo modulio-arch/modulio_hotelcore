@@ -11,12 +11,11 @@
             <field name="arch" type="xml">
                 <calendar string="Room Availability Calendar" 
                          date_start="create_date" 
-                         color="occupancy_state"
+                         color="state"
                          event_open_popup="true">
                     <field name="room_number"/>
                     <field name="room_type_id"/>
-                    <field name="occupancy_state"/>
-                    <field name="housekeeping_state"/>
+                    <field name="state"/>
                     <field name="maintenance_required"/>
                     <field name="floor"/>
                 </calendar>
@@ -32,13 +31,12 @@
                     <field name="room_number"/>
                     <field name="floor"/>
                     <field name="room_type_id"/>
-                    <field name="occupancy_state"/>
-                    <field name="housekeeping_state"/>
+                    <field name="state"/>
                     <field name="maintenance_required"/>
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click" 
-                                 t-att-class="'oe_kanban_card_' + record.occupancy_state.raw_value">
+                                 t-att-class="'oe_kanban_card_' + record.state.raw_value">
                                 <div class="oe_kanban_content">
                                     <div class="o_kanban_record_top">
                                         <div class="o_kanban_record_headings">
@@ -63,12 +61,8 @@
                                         <div class="o_kanban_record_bottom">
                                             <div class="oe_kanban_bottom_left">
                                                 <span class="badge badge-pill" 
-                                                      t-att-class="'badge-' + (record.occupancy_state.raw_value == 'available' ? 'success' : record.occupancy_state.raw_value == 'occupied' ? 'warning' : record.occupancy_state.raw_value == 'reserved' ? 'info' : 'secondary')">
-                                                    <field name="occupancy_state"/>
-                                                </span>
-                                                <span class="badge badge-pill ms-1" 
-                                                      t-att-class="'badge-' + (record.housekeeping_state.raw_value == 'inspected' ? 'success' : record.housekeeping_state.raw_value == 'dirty' ? 'warning' : record.housekeeping_state.raw_value == 'out_of_service' ? 'danger' : 'secondary')">
-                                                    <field name="housekeeping_state"/>
+                                                      t-att-class="'badge-' + (record.state.raw_value == 'clean' ? 'success' : record.state.raw_value == 'dirty' ? 'warning' : record.state.raw_value == 'make_up_room' ? 'info' : record.state.raw_value == 'inspected' ? 'success' : record.state.raw_value == 'out_of_service' ? 'warning' : record.state.raw_value == 'out_of_order' ? 'danger' : record.state.raw_value == 'house_use' ? 'info' : 'secondary')">
+                                                    <field name="state"/>
                                                 </span>
                                             </div>
                                             <div class="oe_kanban_bottom_right">
@@ -94,27 +88,25 @@
                 <search string="Room Availability">
                     <field name="room_number"/>
                     <field name="room_type_id"/>
-                    <field name="occupancy_state"/>
-                    <field name="housekeeping_state"/>
+                    <field name="state"/>
                     <field name="floor"/>
                     <field name="last_status_change" string="From (Last Status Change)" filter_domain="[('last_status_change', '&gt;=', self)]"/>
                     <field name="last_status_change" string="To (Last Status Change)" filter_domain="[('last_status_change', '&lt;=', self)]"/>
                     <separator/>
-                    <filter string="Available" name="available" 
-                            domain="[('occupancy_state', '=', 'available')]"/>
-                    <filter string="Occupied" name="occupied" 
-                            domain="[('occupancy_state', '=', 'occupied')]"/>
-                    <filter string="Reserved" name="reserved" 
-                            domain="[('occupancy_state', '=', 'reserved')]"/>
-                    <separator/>
-                    <filter string="Dirty" name="dirty" 
-                            domain="[('housekeeping_state', '=', 'dirty')]"/>
                     <filter string="Clean" name="clean" 
-                            domain="[('housekeeping_state', '=', 'clean')]"/>
+                            domain="[('state', '=', 'clean')]"/>
+                    <filter string="Dirty" name="dirty" 
+                            domain="[('state', '=', 'dirty')]"/>
+                    <filter string="Make Up Room" name="make_up_room" 
+                            domain="[('state', '=', 'make_up_room')]"/>
                     <filter string="Inspected" name="inspected" 
-                            domain="[('housekeeping_state', '=', 'inspected')]"/>
+                            domain="[('state', '=', 'inspected')]"/>
                     <filter string="Out of Service" name="out_of_service" 
-                            domain="[('housekeeping_state', '=', 'out_of_service')]"/>
+                            domain="[('state', '=', 'out_of_service')]"/>
+                    <filter string="Out of Order" name="out_of_order" 
+                            domain="[('state', '=', 'out_of_order')]"/>
+                    <filter string="House Use" name="house_use" 
+                            domain="[('state', '=', 'house_use')]"/>
                     <separator/>
                     <filter string="Maintenance Required" name="maintenance" 
                             domain="[('maintenance_required', '=', True)]"/>
@@ -124,8 +116,7 @@
                     <group expand="0" string="Group By">
                         <filter string="Room Type" name="group_room_type" context="{'group_by': 'room_type_id'}"/>
                         <filter string="Floor" name="group_floor" context="{'group_by': 'floor'}"/>
-                        <filter string="Occupancy" name="group_occupancy" context="{'group_by': 'occupancy_state'}"/>
-                        <filter string="Housekeeping" name="group_housekeeping" context="{'group_by': 'housekeeping_state'}"/>
+                        <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
                     </group>
                 </search>
             </field>

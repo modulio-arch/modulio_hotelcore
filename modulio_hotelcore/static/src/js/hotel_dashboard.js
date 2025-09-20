@@ -46,15 +46,14 @@ class HotelDashboard extends Component {
             error: null,
             
             // Data states
-            kpi: { total: 0, available: 0, occupied: 0, reserved: 0, dirty: 0, inspected: 0, clean: 0, oos: 0 },
+            kpi: { total: 0, clean: 0, check_in: 0, check_out: 0, dirty: 0, make_up_room: 0, inspected: 0, out_of_service: 0, out_of_order: 0, house_use: 0 },
             roomTypes: [],
             rooms: [],
             roomTypeOptions: [],
             
             // Filter states
             filters: {
-                occupancy_state: false,
-                housekeeping_state: false,
+                state: false,
                 room_type_id: false,
                 floor: false,
                 start_date: false,
@@ -198,12 +197,8 @@ class HotelDashboard extends Component {
         const validFilters = {};
         
         // Only restore filters that have valid values
-        if (filters.occupancy_state && ['available', 'reserved', 'occupied'].includes(filters.occupancy_state)) {
-            validFilters.occupancy_state = filters.occupancy_state;
-        }
-        
-        if (filters.housekeeping_state && ['dirty', 'clean', 'inspected', 'out_of_service'].includes(filters.housekeeping_state)) {
-            validFilters.housekeeping_state = filters.housekeeping_state;
+        if (filters.state && ['clean', 'dirty', 'make_up_room', 'inspected', 'out_of_service', 'out_of_order', 'house_use'].includes(filters.state)) {
+            validFilters.state = filters.state;
         }
         
         if (filters.room_type_id && typeof filters.room_type_id === 'number' && filters.room_type_id > 0) {
@@ -282,8 +277,7 @@ class HotelDashboard extends Component {
         
         // Reset filters
         this.state.filters = {
-            occupancy_state: false,
-            housekeeping_state: false,
+            state: false,
             room_type_id: false,
             floor: false,
             start_date: false,
@@ -406,16 +400,10 @@ class HotelDashboard extends Component {
         // Debug: Log current filter state
         console.log("Current filter state:", this.state.filters);
         
-        // Apply occupancy state filter
-        if (this.state.filters.occupancy_state) {
-            domain.push(["occupancy_state", "=", this.state.filters.occupancy_state]);
-            console.log("Added occupancy filter:", this.state.filters.occupancy_state);
-        }
-        
-        // Apply housekeeping state filter
-        if (this.state.filters.housekeeping_state) {
-            domain.push(["housekeeping_state", "=", this.state.filters.housekeeping_state]);
-            console.log("Added housekeeping filter:", this.state.filters.housekeeping_state);
+        // Apply state filter
+        if (this.state.filters.state) {
+            domain.push(["state", "=", this.state.filters.state]);
+            console.log("Added state filter:", this.state.filters.state);
         }
         
         // Apply room type filter
@@ -473,18 +461,20 @@ class HotelDashboard extends Component {
             const total = await this.orm.searchCount("hotel.room", baseDomain);
             console.log("Total rooms found:", total);
             
-            const available = await this.orm.searchCount("hotel.room", [...baseDomain, ["occupancy_state", "=", "available"]]);
-            const occupied = await this.orm.searchCount("hotel.room", [...baseDomain, ["occupancy_state", "=", "occupied"]]);
-            const reserved = await this.orm.searchCount("hotel.room", [...baseDomain, ["occupancy_state", "=", "reserved"]]);
-            const dirty = await this.orm.searchCount("hotel.room", [...baseDomain, ["housekeeping_state", "=", "dirty"]]);
-            const inspected = await this.orm.searchCount("hotel.room", [...baseDomain, ["housekeeping_state", "=", "inspected"]]);
-            const clean = await this.orm.searchCount("hotel.room", [...baseDomain, ["housekeeping_state", "=", "clean"]]);
-            const oos = await this.orm.searchCount("hotel.room", [...baseDomain, ["housekeeping_state", "=", "out_of_service"]]);
+            const clean = await this.orm.searchCount("hotel.room", [...baseDomain, ["state", "=", "clean"]]);
+            const check_in = await this.orm.searchCount("hotel.room", [...baseDomain, ["state", "=", "check_in"]]);
+            const check_out = await this.orm.searchCount("hotel.room", [...baseDomain, ["state", "=", "check_out"]]);
+            const dirty = await this.orm.searchCount("hotel.room", [...baseDomain, ["state", "=", "dirty"]]);
+            const make_up_room = await this.orm.searchCount("hotel.room", [...baseDomain, ["state", "=", "make_up_room"]]);
+            const inspected = await this.orm.searchCount("hotel.room", [...baseDomain, ["state", "=", "inspected"]]);
+            const out_of_service = await this.orm.searchCount("hotel.room", [...baseDomain, ["state", "=", "out_of_service"]]);
+            const out_of_order = await this.orm.searchCount("hotel.room", [...baseDomain, ["state", "=", "out_of_order"]]);
+            const house_use = await this.orm.searchCount("hotel.room", [...baseDomain, ["state", "=", "house_use"]]);
             
-            console.log("KPI counts:", { total, available, occupied, reserved, dirty, inspected, clean, oos });
+            console.log("KPI counts:", { total, clean, check_in, check_out, dirty, make_up_room, inspected, out_of_service, out_of_order, house_use });
 
             // Update KPI data
-            this.state.kpi = { total, available, occupied, reserved, dirty, inspected, clean, oos };
+            this.state.kpi = { total, clean, check_in, check_out, dirty, make_up_room, inspected, out_of_service, out_of_order, house_use };
 
             // Room types with filters applied
             const roomTypeDomain = this.buildRoomTypeFilterDomain();
@@ -500,7 +490,7 @@ class HotelDashboard extends Component {
                     const availableDomain = [
                         ...baseDomain,
                         ["room_type_id", "=", rt.id],
-                        ["occupancy_state", "=", "available"]
+                        ["state", "in", ["clean", "inspected"]]
                     ];
                     const totalDomain = [
                         ...baseDomain,
@@ -532,8 +522,8 @@ class HotelDashboard extends Component {
 
             // Rooms list with filters applied
             const rooms = await this.orm.searchRead("hotel.room", baseDomain, [
-                "room_number", "floor", "room_type_id", "occupancy_state", 
-                "housekeeping_state", "maintenance_required"
+                "room_number", "floor", "room_type_id", "state", 
+                "maintenance_required"
             ], { limit: 100 });
             
             console.log("Rooms found:", rooms);
@@ -589,8 +579,7 @@ class HotelDashboard extends Component {
         
         // Reset filters state - OWL will automatically update the UI
         this.state.filters = {
-            occupancy_state: false,
-            housekeeping_state: false,
+            state: false,
             room_type_id: false,
             floor: false,
             start_date: false,
@@ -612,17 +601,10 @@ class HotelDashboard extends Component {
     }
 
     // OWL Reactive Methods for individual filter changes with debouncing
-    onOccupancyStateChange(ev) {
+    onStateChange(ev) {
         const value = ev.target.value;
-        this.state.filters.occupancy_state = value || false;
-        console.log("Occupancy state changed:", value);
-        this.debouncedApplyFilters();
-    }
-
-    onHousekeepingStateChange(ev) {
-        const value = ev.target.value;
-        this.state.filters.housekeeping_state = value || false;
-        console.log("Housekeeping state changed:", value);
+        this.state.filters.state = value || false;
+        console.log("State changed:", value);
         this.debouncedApplyFilters();
     }
 
@@ -679,8 +661,7 @@ class HotelDashboard extends Component {
     // Method to get current filter values for debugging
     getCurrentFilters() {
         return {
-            occupancy_state: this.state.filters.occupancy_state,
-            housekeeping_state: this.state.filters.housekeeping_state,
+            state: this.state.filters.state,
             room_type_id: this.state.filters.room_type_id,
             floor: this.state.filters.floor,
             start_date: this.state.filters.start_date,

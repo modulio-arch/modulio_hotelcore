@@ -12,8 +12,7 @@
                     <field name="floor"/>
                     <field name="floor_id" readonly="1"/>
                     <field name="room_type_id"/>
-                    <field name="occupancy_state" widget="badge"/>
-                    <field name="housekeeping_state" widget="badge"/>
+                    <field name="state" widget="badge"/>
                     <field name="max_occupancy"/>
                     <field name="maintenance_required" widget="boolean_toggle"/>
                 </list>
@@ -27,11 +26,42 @@
             <field name="arch" type="xml">
                 <form string="Room">
                     <header>
-                        <button name="action_reserve" string="Reserve" type="object" class="btn-info"/>
-                        <button name="action_check_in" string="Check In" type="object" class="btn-success"/>
-                        <button name="action_check_out" string="Check Out" type="object" class="btn-secondary"/>
-                        <button name="action_housekeeping_clean" string="HK Clean" type="object" class="btn-light"/>
-                        <button name="action_housekeeping_inspect" string="HK Inspect" type="object" class="btn-light"/>
+                        <!-- Front Office Actions -->
+                        <button name="action_check_in" string="Check In" type="object" class="btn-primary" 
+                                invisible="state not in ['clean', 'inspected']"
+                                groups="modulio_hotelcore.group_hotel_front_office"/>
+                        <button name="action_check_out" string="Check Out" type="object" class="btn-secondary" 
+                                invisible="state != 'check_in'"
+                                groups="modulio_hotelcore.group_hotel_front_office"/>
+                        <button name="action_room_ready_for_cleaning" string="Ready for Cleaning" type="object" class="btn-warning" 
+                                invisible="state != 'check_out'"
+                                groups="modulio_hotelcore.group_hotel_front_office"/>
+                        <button name="action_assign_house_use" string="Assign House Use" type="object" class="btn-info" 
+                                invisible="state not in ['clean', 'inspected']"
+                                groups="modulio_hotelcore.group_hotel_front_office"/>
+                        <button name="action_staff_checkout" string="Staff Checkout" type="object" class="btn-secondary" 
+                                invisible="state != 'house_use'"
+                                groups="modulio_hotelcore.group_hotel_front_office"/>
+                        
+                        <!-- Housekeeping Actions -->
+                        <button name="action_start_cleaning" string="Start Cleaning" type="object" class="btn-warning" 
+                                invisible="state != 'dirty'"
+                                groups="modulio_hotelcore.group_hotel_housekeeping"/>
+                        <button name="action_finish_cleaning" string="Finish Cleaning" type="object" class="btn-info" 
+                                invisible="state != 'make_up_room'"
+                                groups="modulio_hotelcore.group_hotel_housekeeping"/>
+                        <button name="action_final_inspection" string="Final Inspection" type="object" class="btn-success" 
+                                invisible="state != 'clean'"
+                                groups="modulio_hotelcore.group_hotel_housekeeping"/>
+                        <button name="action_maintenance_light" string="Light Maintenance" type="object" class="btn-warning" 
+                                invisible="state != 'clean'"
+                                groups="modulio_hotelcore.group_hotel_housekeeping"/>
+                        <button name="action_maintenance_heavy" string="Heavy Maintenance" type="object" class="btn-danger" 
+                                invisible="state != 'clean'"
+                                groups="modulio_hotelcore.group_hotel_housekeeping"/>
+                        <button name="action_complete_maintenance" string="Complete Maintenance" type="object" class="btn-success" 
+                                invisible="state not in ['out_of_service', 'out_of_order']"
+                                groups="modulio_hotelcore.group_hotel_housekeeping"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -67,10 +97,7 @@
                         </group>
                         <group>
                             <group>
-                                <field name="occupancy_state"/>
-                            </group>
-                            <group>
-                                <field name="housekeeping_state"/>
+                                <field name="state"/>
                             </group>
                         </group>
                         <group>
@@ -137,19 +164,19 @@
                     <field name="room_type_id"/>
                     <field name="floor"/>
                     <field name="floor_id"/>
-                    <field name="occupancy_state"/>
-                    <field name="housekeeping_state"/>
+                    <field name="state"/>
                     <field name="last_status_change" string="From (Last Status Change)" filter_domain="[('last_status_change', '&gt;=', self)]"/>
                     <field name="last_status_change" string="To (Last Status Change)" filter_domain="[('last_status_change', '&lt;=', self)]"/>
                     <separator/>
-                    <filter string="Available" name="available" domain="[('occupancy_state', '=', 'available')]"/>
-                    <filter string="Reserved" name="reserved" domain="[('occupancy_state', '=', 'reserved')]"/>
-                    <filter string="Occupied" name="occupied" domain="[('occupancy_state', '=', 'occupied')]"/>
-                    <separator/>
-                    <filter string="Dirty (HK)" name="dirty" domain="[('housekeeping_state', '=', 'dirty')]"/>
-                    <filter string="Clean (HK)" name="clean" domain="[('housekeeping_state', '=', 'clean')]"/>
-                    <filter string="Inspected (HK)" name="inspected" domain="[('housekeeping_state', '=', 'inspected')]"/>
-                    <filter string="Out of Service (HK)" name="out_of_service" domain="[('housekeeping_state', '=', 'out_of_service')]"/>
+                    <filter string="Clean" name="clean" domain="[('state', '=', 'clean')]"/>
+                    <filter string="Check In" name="check_in" domain="[('state', '=', 'check_in')]"/>
+                    <filter string="Check Out" name="check_out" domain="[('state', '=', 'check_out')]"/>
+                    <filter string="Dirty" name="dirty" domain="[('state', '=', 'dirty')]"/>
+                    <filter string="Make Up Room" name="make_up_room" domain="[('state', '=', 'make_up_room')]"/>
+                    <filter string="Inspected" name="inspected" domain="[('state', '=', 'inspected')]"/>
+                    <filter string="Out of Service" name="out_of_service" domain="[('state', '=', 'out_of_service')]"/>
+                    <filter string="Out of Order" name="out_of_order" domain="[('state', '=', 'out_of_order')]"/>
+                    <filter string="House Use" name="house_use" domain="[('state', '=', 'house_use')]"/>
                     <separator/>
                     <filter string="Maintenance Required" name="maintenance_required" domain="[('maintenance_required', '=', True)]"/>
                     <separator/>
@@ -158,8 +185,7 @@
                         <filter string="Room Type" name="group_room_type" context="{'group_by': 'room_type_id'}"/>
                         <filter string="Floor" name="group_floor" context="{'group_by': 'floor'}"/>
                         <filter string="Floor (Entity)" name="group_floor_entity" context="{'group_by': 'floor_id'}"/>
-                        <filter string="Occupancy" name="group_occupancy" context="{'group_by': 'occupancy_state'}"/>
-                        <filter string="Housekeeping" name="group_housekeeping" context="{'group_by': 'housekeeping_state'}"/>
+                        <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
                     </group>
                 </search>
             </field>
@@ -175,13 +201,12 @@
                     <field name="floor"/>
                     <field name="floor_id" readonly="1"/>
                     <field name="room_type_id"/>
-                    <field name="occupancy_state"/>
-                    <field name="housekeeping_state"/>
+                    <field name="state"/>
                     <field name="max_occupancy"/>
                     <field name="maintenance_required"/>
                     <templates>
                         <t t-name="card">
-                            <div class="oe_kanban_card oe_kanban_global_click" t-att-class="'oe_kanban_card_' + record.occupancy_state.raw_value">
+                            <div class="oe_kanban_card oe_kanban_global_click" t-att-class="'oe_kanban_card_' + record.state.raw_value">
                                 <div class="oe_kanban_content">
                                     <div class="o_kanban_record_top">
                                         <div class="o_kanban_record_headings">
@@ -208,13 +233,16 @@
                                                 <span>Max: <field name="max_occupancy"/></span>
                                             </div>
                                             <div class="oe_kanban_bottom_right">
-                                                <span class="badge badge-pill" t-att-class="'badge-' + (record.occupancy_state.raw_value == 'available' ? 'success' : record.occupancy_state.raw_value == 'occupied' ? 'warning' : record.occupancy_state.raw_value == 'reserved' ? 'info' : 'danger')">
-                                                    <field name="occupancy_state"/>
+                                                <span class="badge badge-pill" t-att-class="'badge-' + (record.state.raw_value == 'clean' ? 'success' : record.state.raw_value == 'dirty' ? 'warning' : record.state.raw_value == 'make_up_room' ? 'info' : record.state.raw_value == 'inspected' ? 'success' : record.state.raw_value == 'out_of_service' ? 'warning' : record.state.raw_value == 'out_of_order' ? 'danger' : record.state.raw_value == 'house_use' ? 'info' : 'secondary')">
+                                                    <field name="state"/>
                                                 </span>
                                                 <span t-if="record.maintenance_required.raw_value" class="fa fa-wrench text-warning" title="Maintenance Required"/>
-                                                <span t-if="record.housekeeping_state.raw_value == 'dirty'" class="fa fa-broom text-warning" title="HK Dirty"/>
-                                                <span t-if="record.housekeeping_state.raw_value == 'clean'" class="fa fa-broom text-info" title="HK Clean"/>
-                                                <span t-if="record.housekeeping_state.raw_value == 'inspected'" class="fa fa-check text-success" title="HK Inspected"/>
+                                                <span t-if="record.state.raw_value == 'dirty'" class="fa fa-broom text-warning" title="Needs Cleaning"/>
+                                                <span t-if="record.state.raw_value == 'make_up_room'" class="fa fa-broom text-info" title="Being Cleaned"/>
+                                                <span t-if="record.state.raw_value == 'inspected'" class="fa fa-check text-success" title="Inspected"/>
+                                                <span t-if="record.state.raw_value == 'out_of_service'" class="fa fa-tools text-warning" title="Out of Service"/>
+                                                <span t-if="record.state.raw_value == 'out_of_order'" class="fa fa-exclamation-triangle text-danger" title="Out of Order"/>
+                                                <span t-if="record.state.raw_value == 'house_use'" class="fa fa-home text-info" title="House Use"/>
                                             </div>
                                         </div>
                                     </div>
@@ -231,11 +259,10 @@
             <field name="name">hotel.room.calendar</field>
             <field name="model">hotel.room</field>
             <field name="arch" type="xml">
-                <calendar string="Room Status Calendar" date_start="create_date" color="occupancy_state">
+                <calendar string="Room Status Calendar" date_start="create_date" color="state">
                     <field name="room_number"/>
                     <field name="room_type_id"/>
-                    <field name="occupancy_state"/>
-                    <field name="housekeeping_state"/>
+                    <field name="state"/>
                 </calendar>
             </field>
         </record>

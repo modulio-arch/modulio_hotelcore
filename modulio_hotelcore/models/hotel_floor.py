@@ -119,14 +119,14 @@ class HotelFloor(models.Model):
             room_types = record.room_ids.mapped('room_type_id')
             record.room_type_count = len(room_types)
 
-    @api.depends('room_ids', 'room_ids.occupancy_state')
+    @api.depends('room_ids', 'room_ids.state')
     def _compute_room_stats(self):
         for record in self:
             rooms = record.room_ids
             record.total_rooms = len(rooms)
-            record.available_rooms = len(rooms.filtered(lambda r: r.occupancy_state == 'available'))
-            record.occupied_rooms = len(rooms.filtered(lambda r: r.occupancy_state == 'occupied'))
-            record.reserved_rooms = len(rooms.filtered(lambda r: r.occupancy_state == 'reserved'))
+            record.available_rooms = len(rooms.filtered(lambda r: r.state in ['clean', 'inspected']))
+            record.occupied_rooms = len(rooms.filtered(lambda r: r.state == 'house_use'))
+            record.reserved_rooms = len(rooms.filtered(lambda r: r.state in ['dirty', 'make_up_room']))
 
     @api.depends('room_ids', 'room_ids.maintenance_required')
     def _compute_maintenance_status(self):
@@ -217,8 +217,7 @@ class HotelFloor(models.Model):
                 'room_id': room.id,
                 'room_number': room.room_number,
                 'room_type': room.room_type_id.name,
-                'occupancy_state': room.occupancy_state,
-                'housekeeping_state': room.housekeeping_state,
+                'state': room.state,
                 'available': availability['available'],
                 'maintenance_required': room.maintenance_required,
             }
@@ -226,14 +225,14 @@ class HotelFloor(models.Model):
             summary['rooms'].append(room_summary)
             
             # Count by status
-            if room.occupancy_state == 'available':
+            if room.state in ['clean', 'inspected']:
                 summary['available_rooms'] += 1
-            elif room.occupancy_state == 'occupied':
+            elif room.state == 'house_use':
                 summary['occupied_rooms'] += 1
-            elif room.occupancy_state == 'reserved':
+            elif room.state in ['dirty', 'make_up_room']:
                 summary['reserved_rooms'] += 1
             
-            if room.housekeeping_state == 'out_of_service':
+            if room.state in ['out_of_service', 'out_of_order']:
                 summary['out_of_service_rooms'] += 1
             
             if room.maintenance_required:

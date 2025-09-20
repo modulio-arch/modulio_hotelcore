@@ -23,6 +23,62 @@
                   sequence="20"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
+        <!-- Front Office Menu -->
+        <menuitem id="menu_hotel_front_office" 
+                  name="Front Office" 
+                  parent="menu_hotel_main" 
+                  sequence="25"
+                  groups="modulio_hotelcore.group_hotel_front_office"/>
+
+        <menuitem id="menu_hotel_front_office_rooms" 
+                  name="Room Management" 
+                  parent="menu_hotel_front_office" 
+                  action="action_hotel_room_act_window" 
+                  sequence="10"
+                  groups="modulio_hotelcore.group_hotel_front_office"/>
+
+        <!-- Housekeeping Menu -->
+        <menuitem id="menu_hotel_housekeeping" 
+                  name="Housekeeping" 
+                  parent="menu_hotel_main" 
+                  sequence="26"
+                  groups="modulio_hotelcore.group_hotel_housekeeping"/>
+
+        <menuitem id="menu_hotel_housekeeping_rooms" 
+                  name="Room Cleaning" 
+                  parent="menu_hotel_housekeeping" 
+                  action="action_hotel_room_act_window" 
+                  sequence="10"
+                  groups="modulio_hotelcore.group_hotel_housekeeping"/>
+
+        <menuitem id="menu_hotel_housekeeping_maintenance" 
+                  name="Maintenance Requests" 
+                  parent="menu_hotel_housekeeping" 
+                  action="action_hotel_maintenance_request_act_window" 
+                  sequence="20"
+                  groups="modulio_hotelcore.group_hotel_housekeeping"/>
+
+        <!-- Maintenance Menu -->
+        <menuitem id="menu_hotel_maintenance" 
+                  name="Maintenance" 
+                  parent="menu_hotel_main" 
+                  sequence="27"
+                  groups="modulio_hotelcore.group_hotel_maintenance"/>
+
+        <menuitem id="menu_hotel_maintenance_rooms" 
+                  name="Room Maintenance" 
+                  parent="menu_hotel_maintenance" 
+                  action="action_hotel_room_act_window" 
+                  sequence="10"
+                  groups="modulio_hotelcore.group_hotel_maintenance"/>
+
+        <menuitem id="menu_hotel_maintenance_requests" 
+                  name="Maintenance Requests" 
+                  parent="menu_hotel_maintenance" 
+                  action="action_hotel_maintenance_request_act_window" 
+                  sequence="20"
+                  groups="modulio_hotelcore.group_hotel_maintenance"/>
+
         <!-- Maintenance Requests Menu -->
         <menuitem id="menu_hotel_maintenance_request" 
                   name="Maintenance Requests" 

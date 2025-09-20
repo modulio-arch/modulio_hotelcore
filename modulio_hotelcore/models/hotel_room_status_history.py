@@ -40,46 +40,40 @@ class HotelRoomStatusHistory(models.Model):
 
     # Status Change Information
     change_type = fields.Selection([
-        ('occupancy', 'Occupancy Status'),
-        ('housekeeping', 'Housekeeping Status'),
-        ('maintenance', 'Maintenance Status'),
+        ('fo', 'Front Office'),
+        ('hk', 'Housekeeping'),
+        ('mt', 'Maintenance'),
         ('blocking', 'Blocking Status'),
+        ('system', 'System'),
         ('other', 'Other'),
     ], string='Change Type', required=True, index=True,
        help='Type of status change')
 
-    # Previous Status
-    old_occupancy_state = fields.Selection([
-        ('available', 'Available'),
-        ('reserved', 'Reserved'),
-        ('occupied', 'Occupied'),
-    ], string='Previous Occupancy State', help='Previous occupancy state')
-
-    old_housekeeping_state = fields.Selection([
-        ('dirty', 'Dirty'),
+    # Single State Tracking
+    old_state = fields.Selection([
         ('clean', 'Clean'),
+        ('dirty', 'Dirty'),
+        ('make_up_room', 'Make Up Room'),
         ('inspected', 'Inspected'),
         ('out_of_service', 'Out of Service'),
-    ], string='Previous Housekeeping State', help='Previous housekeeping state')
+        ('out_of_order', 'Out of Order'),
+        ('house_use', 'House Use'),
+    ], string='Previous State', help='Previous room state')
+
+    new_state = fields.Selection([
+        ('clean', 'Clean'),
+        ('dirty', 'Dirty'),
+        ('make_up_room', 'Make Up Room'),
+        ('inspected', 'Inspected'),
+        ('out_of_service', 'Out of Service'),
+        ('out_of_order', 'Out of Order'),
+        ('house_use', 'House Use'),
+    ], string='New State', help='New room state')
 
     old_maintenance_required = fields.Boolean(
         string='Previous Maintenance Required',
         help='Previous maintenance required status'
     )
-
-    # New Status
-    new_occupancy_state = fields.Selection([
-        ('available', 'Available'),
-        ('reserved', 'Reserved'),
-        ('occupied', 'Occupied'),
-    ], string='New Occupancy State', help='New occupancy state')
-
-    new_housekeeping_state = fields.Selection([
-        ('dirty', 'Dirty'),
-        ('clean', 'Clean'),
-        ('inspected', 'Inspected'),
-        ('out_of_service', 'Out of Service'),
-    ], string='New Housekeeping State', help='New housekeeping state')
 
     new_maintenance_required = fields.Boolean(
         string='New Maintenance Required',
@@ -175,34 +169,26 @@ class HotelRoomStatusHistory(models.Model):
             else:
                 record.display_name = f"Room Status History - {record.id}"
 
-    @api.depends('old_occupancy_state', 'new_occupancy_state', 
-                 'old_housekeeping_state', 'new_housekeeping_state',
-                 'old_maintenance_required', 'new_maintenance_required')
+    @api.depends('old_state', 'new_state', 'old_maintenance_required', 'new_maintenance_required')
     def _compute_status_summary(self):
         """Compute status change summary"""
         for record in self:
             changes = []
             
-            if record.old_occupancy_state != record.new_occupancy_state:
-                changes.append(f"Occupancy: {record.old_occupancy_state or 'N/A'} → {record.new_occupancy_state or 'N/A'}")
-            
-            if record.old_housekeeping_state != record.new_housekeeping_state:
-                changes.append(f"Housekeeping: {record.old_housekeeping_state or 'N/A'} → {record.new_housekeeping_state or 'N/A'}")
+            if record.old_state != record.new_state:
+                changes.append(f"State: {record.old_state or 'N/A'} → {record.new_state or 'N/A'}")
             
             if record.old_maintenance_required != record.new_maintenance_required:
                 changes.append(f"Maintenance: {record.old_maintenance_required} → {record.new_maintenance_required}")
             
             record.status_summary = '; '.join(changes) if changes else 'No changes'
 
-    @api.depends('old_occupancy_state', 'new_occupancy_state', 
-                 'old_housekeeping_state', 'new_housekeeping_state',
-                 'old_maintenance_required', 'new_maintenance_required')
+    @api.depends('old_state', 'new_state', 'old_maintenance_required', 'new_maintenance_required')
     def _compute_has_changes(self):
         """Check if there are actual changes in this record"""
         for record in self:
             record.has_changes = (
-                record.old_occupancy_state != record.new_occupancy_state or
-                record.old_housekeeping_state != record.new_housekeeping_state or
+                record.old_state != record.new_state or
                 record.old_maintenance_required != record.new_maintenance_required
             )
 
@@ -222,10 +208,8 @@ class HotelRoomStatusHistory(models.Model):
 
     def _detect_change_type(self, vals):
         """Auto-detect change type based on changed fields"""
-        if 'new_occupancy_state' in vals or 'old_occupancy_state' in vals:
-            return 'occupancy'
-        elif 'new_housekeeping_state' in vals or 'old_housekeeping_state' in vals:
-            return 'housekeeping'
+        if 'new_state' in vals or 'old_state' in vals:
+            return 'state'
         elif 'new_maintenance_required' in vals or 'old_maintenance_required' in vals:
             return 'maintenance'
         else:
@@ -234,8 +218,7 @@ class HotelRoomStatusHistory(models.Model):
     def _has_actual_changes(self, vals):
         """Check if there are actual changes in the values"""
         return (
-            vals.get('old_occupancy_state') != vals.get('new_occupancy_state') or
-            vals.get('old_housekeeping_state') != vals.get('new_housekeeping_state') or
+            vals.get('old_state') != vals.get('new_state') or
             vals.get('old_maintenance_required') != vals.get('new_maintenance_required')
         )
 
@@ -249,10 +232,8 @@ class HotelRoomStatusHistory(models.Model):
         history_vals = {
             'room_id': room_id,
             'change_type': change_type,
-            'old_occupancy_state': old_values.get('occupancy_state'),
-            'new_occupancy_state': new_values.get('occupancy_state'),
-            'old_housekeeping_state': old_values.get('housekeeping_state'),
-            'new_housekeeping_state': new_values.get('housekeeping_state'),
+            'old_state': old_values.get('state'),
+            'new_state': new_values.get('state'),
             'old_maintenance_required': old_values.get('maintenance_required'),
             'new_maintenance_required': new_values.get('maintenance_required'),
             'change_reason': change_reason,

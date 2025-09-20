@@ -31,24 +31,18 @@
                     <div class="o_hotel_dashboard_filters o_control_panel">
                 <div class="o_cp_buttons">
                     <div class="o_form_buttons_view">
-                        <label>Occupancy:</label>
-                        <select name="occupancy_state" 
-                                t-model="state.filters.occupancy_state"
-                                t-on-change="onOccupancyStateChange">
+                        <label>Room Status:</label>
+                        <select name="state" 
+                                t-model="state.filters.state"
+                                t-on-change="onStateChange">
                             <option value="">All</option>
-                            <option value="available">Available</option>
-                            <option value="reserved">Reserved</option>
-                            <option value="occupied">Occupied</option>
-                        </select>
-                        <label>Housekeeping:</label>
-                        <select name="housekeeping_state" 
-                                t-model="state.filters.housekeeping_state"
-                                t-on-change="onHousekeepingStateChange">
-                            <option value="">All</option>
-                            <option value="dirty">Dirty</option>
                             <option value="clean">Clean</option>
+                            <option value="dirty">Dirty</option>
+                            <option value="make_up_room">Make Up Room</option>
                             <option value="inspected">Inspected</option>
                             <option value="out_of_service">Out of Service</option>
+                            <option value="out_of_order">Out of Order</option>
+                            <option value="house_use">House Use</option>
                         </select>
                         <label class="ms8">Room Type:</label>
                         <select name="room_type_id" 
@@ -87,13 +81,15 @@
 
                     <div class="o_hotel_dashboard_kpis o-flex o-row o-gutter">
                         <div class="o_kpi_card"><div class="o_kpi_value" t-esc="state.kpi.total"/>Total Rooms</div>
-                        <div class="o_kpi_card o_text-success"><div class="o_kpi_value" t-esc="state.kpi.available"/>Available</div>
-                        <div class="o_kpi_card o_text-info"><div class="o_kpi_value" t-esc="state.kpi.reserved"/>Reserved</div>
-                        <div class="o_kpi_card o_text-warning"><div class="o_kpi_value" t-esc="state.kpi.occupied"/>Occupied</div>
-                        <div class="o_kpi_card o_text-orange"><div class="o_kpi_value" t-esc="state.kpi.dirty"/>Dirty</div>
-                        <div class="o_kpi_card o_text-muted"><div class="o_kpi_value" t-esc="state.kpi.clean"/>Clean</div>
-                        <div class="o_kpi_card o_text-muted"><div class="o_kpi_value" t-esc="state.kpi.inspected"/>Inspected</div>
-                        <div class="o_kpi_card o_text-danger"><div class="o_kpi_value" t-esc="state.kpi.oos"/>Out of Service</div>
+                        <div class="o_kpi_card o_text-success"><div class="o_kpi_value" t-esc="state.kpi.clean"/>Clean</div>
+                        <div class="o_kpi_card o_text-primary"><div class="o_kpi_value" t-esc="state.kpi.check_in"/>Check In</div>
+                        <div class="o_kpi_card o_text-secondary"><div class="o_kpi_value" t-esc="state.kpi.check_out"/>Check Out</div>
+                        <div class="o_kpi_card o_text-warning"><div class="o_kpi_value" t-esc="state.kpi.dirty"/>Dirty</div>
+                        <div class="o_kpi_card o_text-info"><div class="o_kpi_value" t-esc="state.kpi.make_up_room"/>Make Up Room</div>
+                        <div class="o_kpi_card o_text-success"><div class="o_kpi_value" t-esc="state.kpi.inspected"/>Inspected</div>
+                        <div class="o_kpi_card o_text-orange"><div class="o_kpi_value" t-esc="state.kpi.out_of_service"/>Out of Service</div>
+                        <div class="o_kpi_card o_text-danger"><div class="o_kpi_value" t-esc="state.kpi.out_of_order"/>Out of Order</div>
+                        <div class="o_kpi_card o_text-info"><div class="o_kpi_value" t-esc="state.kpi.house_use"/>House Use</div>
                     </div>
                 </div>
 
@@ -136,9 +132,7 @@
                                     <th>Room</th>
                                     <th>Floor</th>
                                     <th>Type</th>
-                                    <th>Occupancy</th>
-                                    <th>Housekeeping</th>
-                                    <th>Blocked</th>
+                                    <th>Status</th>
                                     <th>Maintenance</th>
                                     <th></th>
                                 </tr>
@@ -150,13 +144,8 @@
                                         <td t-esc="r.floor"/>
                                         <td t-esc="r.room_type_id &amp;&amp; r.room_type_id[1]"/>
                                         <td>
-                                            <span t-attf-class="o_status_badge o_occupancy_#{r.occupancy_state}">
-                                                <t t-esc="r.occupancy_state"/>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span t-attf-class="o_status_badge o_housekeeping_#{r.housekeeping_state}">
-                                                <t t-esc="r.housekeeping_state"/>
+                                            <span t-attf-class="o_status_badge o_state_#{r.state}">
+                                                <t t-esc="r.state"/>
                                             </span>
                                         </td>
                                         <td>

@@ -85,8 +85,7 @@
             <field name="room_type_id" ref="room_type_single"/>
             <field name="floor">1</field>
             <field name="floor_id" ref="floor_first"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">inspected</field>
+            <field name="state">inspected</field>
             <field name="description">Corner room with city view</field>
         </record>
 
@@ -95,8 +94,7 @@
             <field name="room_type_id" ref="room_type_single"/>
             <field name="floor">1</field>
             <field name="floor_id" ref="floor_first"/>
-            <field name="occupancy_state">occupied</field>
-            <field name="housekeeping_state">dirty</field>
+            <field name="state">dirty</field>
             <field name="description">Standard single room</field>
         </record>
 
@@ -105,8 +103,7 @@
             <field name="room_type_id" ref="room_type_single"/>
             <field name="floor">1</field>
             <field name="floor_id" ref="floor_first"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">dirty</field>
+            <field name="state">dirty</field>
             <field name="description">Recently cleaned, needs inspection</field>
         </record>
 
@@ -115,8 +112,7 @@
             <field name="room_type_id" ref="room_type_single"/>
             <field name="floor">1</field>
             <field name="floor_id" ref="floor_first"/>
-            <field name="occupancy_state">reserved</field>
-            <field name="housekeeping_state">inspected</field>
+            <field name="state">house_use</field>
             <field name="description">Ready for check-in</field>
         </record>
 
@@ -125,8 +121,25 @@
             <field name="room_type_id" ref="room_type_single"/>
             <field name="floor">1</field>
             <field name="floor_id" ref="floor_first"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">out_of_service</field>
+            <field name="state">check_in</field>
+            <field name="description">Guest checked in</field>
+        </record>
+
+        <record id="room_sgl_106" model="hotel.room">
+            <field name="room_number">106</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">1</field>
+            <field name="floor_id" ref="floor_first"/>
+            <field name="state">check_out</field>
+            <field name="description">Guest checked out, ready for cleaning</field>
+        </record>
+
+        <record id="room_sgl_107" model="hotel.room">
+            <field name="room_number">107</field>
+            <field name="room_type_id" ref="room_type_single"/>
+            <field name="floor">1</field>
+            <field name="floor_id" ref="floor_first"/>
+            <field name="state">out_of_service</field>
             <field name="description">Under maintenance - AC repair</field>
             <field name="maintenance_required">True</field>
             <field name="maintenance_notes">Air conditioning unit needs replacement</field>
@@ -138,8 +151,7 @@
             <field name="room_type_id" ref="room_type_double"/>
             <field name="floor">2</field>
             <field name="floor_id" ref="floor_second"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">inspected</field>
+            <field name="state">inspected</field>
             <field name="description">Honeymoon suite with balcony</field>
         </record>
 
@@ -148,8 +160,7 @@
             <field name="room_type_id" ref="room_type_double"/>
             <field name="floor">2</field>
             <field name="floor_id" ref="floor_second"/>
-            <field name="occupancy_state">occupied</field>
-            <field name="housekeeping_state">dirty</field>
+            <field name="state">dirty</field>
             <field name="description">Executive double room</field>
         </record>
 
@@ -158,8 +169,7 @@
             <field name="room_type_id" ref="room_type_double"/>
             <field name="floor">2</field>
             <field name="floor_id" ref="floor_second"/>
-            <field name="occupancy_state">reserved</field>
-            <field name="housekeeping_state">inspected</field>
+            <field name="state">house_use</field>
             <field name="description">Premium double with city view</field>
         </record>
 
@@ -168,8 +178,7 @@
             <field name="room_type_id" ref="room_type_double"/>
             <field name="floor">2</field>
             <field name="floor_id" ref="floor_second"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">clean</field>
+            <field name="state">clean</field>
             <field name="description">Recently cleaned, awaiting inspection</field>
         </record>
 
@@ -178,8 +187,7 @@
             <field name="room_type_id" ref="room_type_double"/>
             <field name="floor">2</field>
             <field name="floor_id" ref="floor_second"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">out_of_service</field>
+            <field name="state">out_of_service</field>
             <field name="description">Renovation in progress</field>
             <field name="maintenance_required">True</field>
             <field name="maintenance_notes">Complete room renovation - new furniture and fixtures</field>
@@ -191,8 +199,7 @@
             <field name="room_type_id" ref="room_type_twin"/>
             <field name="floor">3</field>
             <field name="floor_id" ref="floor_third"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">inspected</field>
+            <field name="state">inspected</field>
             <field name="description">Business twin room with work desk</field>
         </record>
 
@@ -201,8 +208,7 @@
             <field name="room_type_id" ref="room_type_twin"/>
             <field name="floor">3</field>
             <field name="floor_id" ref="floor_third"/>
-            <field name="occupancy_state">occupied</field>
-            <field name="housekeeping_state">dirty</field>
+            <field name="state">dirty</field>
             <field name="description">Standard twin room</field>
         </record>
 
@@ -211,8 +217,7 @@
             <field name="room_type_id" ref="room_type_twin"/>
             <field name="floor">3</field>
             <field name="floor_id" ref="floor_third"/>
-            <field name="occupancy_state">reserved</field>
-            <field name="housekeeping_state">inspected</field>
+            <field name="state">house_use</field>
             <field name="description">Executive twin with city view</field>
         </record>
 
@@ -221,8 +226,7 @@
             <field name="room_type_id" ref="room_type_twin"/>
             <field name="floor">3</field>
             <field name="floor_id" ref="floor_third"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">dirty</field>
+            <field name="state">dirty</field>
             <field name="description">Recently vacated, needs cleaning</field>
         </record>
 
@@ -231,8 +235,7 @@
             <field name="room_type_id" ref="room_type_twin"/>
             <field name="floor">3</field>
             <field name="floor_id" ref="floor_third"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">out_of_service</field>
+            <field name="state">out_of_service</field>
             <field name="description">Plumbing maintenance</field>
             <field name="maintenance_required">True</field>
             <field name="maintenance_notes">Bathroom plumbing repair in progress</field>
@@ -244,8 +247,7 @@
             <field name="room_type_id" ref="room_type_suite"/>
             <field name="floor">4</field>
             <field name="floor_id" ref="floor_fourth"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">inspected</field>
+            <field name="state">inspected</field>
             <field name="description">Presidential suite with panoramic view</field>
         </record>
 
@@ -254,8 +256,7 @@
             <field name="room_type_id" ref="room_type_suite"/>
             <field name="floor">4</field>
             <field name="floor_id" ref="floor_fourth"/>
-            <field name="occupancy_state">occupied</field>
-            <field name="housekeeping_state">dirty</field>
+            <field name="state">dirty</field>
             <field name="description">Executive suite with living area</field>
         </record>
 
@@ -264,8 +265,7 @@
             <field name="room_type_id" ref="room_type_suite"/>
             <field name="floor">4</field>
             <field name="floor_id" ref="floor_fourth"/>
-            <field name="occupancy_state">reserved</field>
-            <field name="housekeeping_state">inspected</field>
+            <field name="state">house_use</field>
             <field name="description">Deluxe suite with kitchenette</field>
         </record>
 
@@ -274,8 +274,7 @@
             <field name="room_type_id" ref="room_type_suite"/>
             <field name="floor">4</field>
             <field name="floor_id" ref="floor_fourth"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">inspected</field>
+            <field name="state">inspected</field>
             <field name="description">Penthouse suite - recently cleaned</field>
         </record>
 
@@ -284,8 +283,7 @@
             <field name="room_type_id" ref="room_type_suite"/>
             <field name="floor">4</field>
             <field name="floor_id" ref="floor_fourth"/>
-            <field name="occupancy_state">available</field>
-            <field name="housekeeping_state">out_of_service</field>
+            <field name="state">out_of_service</field>
             <field name="description">VIP suite under renovation</field>
             <field name="maintenance_required">True</field>
             <field name="maintenance_notes">Complete suite renovation - luxury upgrade</field>
