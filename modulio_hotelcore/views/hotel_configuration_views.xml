@@ -179,7 +179,7 @@
                                     </group>
                                     <group>
                                         <field name="pms_api_url"/>
-                                        <field name="pms_api_key" password="True"/>
+                                        <field name="pms_api_key" widget="password"/>
                                     </group>
                                 </group>
                             </page>

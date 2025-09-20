@@ -20,7 +20,7 @@
                   name="Hotel Floors" 
                   parent="menu_hotel_config" 
                   action="action_hotel_floor_act_window" 
-                  sequence="5"
+                  sequence="10"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
         <!-- Room Types Menu -->
@@ -28,7 +28,7 @@
                   name="Room Types" 
                   parent="menu_hotel_config" 
                   action="action_hotel_room_type_act_window" 
-                  sequence="10"
+                  sequence="20"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
         <!-- Rooms Menu -->
@@ -45,15 +45,15 @@
                   name="Room Blocking" 
                   parent="menu_hotel_config" 
                   action="action_hotel_room_blocking_act_window" 
-                  sequence="20"
+                  sequence="30"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
         <!-- Room Status History Menu -->
         <menuitem id="menu_hotel_room_status_history" 
                   name="Room Status History" 
-                  parent="menu_hotel_main" 
+                  parent="menu_hotel_config" 
                   action="action_hotel_room_status_history_act_window" 
-                  sequence="30"
+                  sequence="40"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
         <!-- Hotel Configuration Menu -->

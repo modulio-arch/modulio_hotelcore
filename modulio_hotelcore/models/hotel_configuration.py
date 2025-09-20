@@ -14,13 +14,11 @@ class HotelConfiguration(models.Model):
     hotel_name = fields.Char(
         string='Hotel Name',
         required=True,
-        tracking=True,
         help='Name of the hotel'
     )
     hotel_code = fields.Char(
         string='Hotel Code',
         required=True,
-        tracking=True,
         help='Unique code for the hotel (e.g., H001)'
     )
     description = fields.Text(
@@ -277,7 +275,6 @@ class HotelConfiguration(models.Model):
     )
     pms_api_key = fields.Char(
         string='PMS API Key',
-        password=True,
         help='API key for PMS integration'
     )
 
