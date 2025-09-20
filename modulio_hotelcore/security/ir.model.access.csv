@@ -1,6 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hotel_floor_user,hotel.floor.user,model_hotel_floor,group_hotel_user,1,0,0,0
 access_hotel_floor_manager,hotel.floor.manager,model_hotel_floor,group_hotel_manager,1,1,1,1
+access_hotel_room_status_history_user,hotel.room.status.history.user,model_hotel_room_status_history,group_hotel_user,1,0,0,0
+access_hotel_room_status_history_manager,hotel.room.status.history.manager,model_hotel_room_status_history,group_hotel_manager,1,1,1,1
 access_hotel_room_type_user,hotel.room.type.user,model_hotel_room_type,group_hotel_user,1,0,0,0
 access_hotel_room_type_manager,hotel.room.type.manager,model_hotel_room_type,group_hotel_manager,1,1,1,1
 access_hotel_room_user,hotel.room.user,model_hotel_room,group_hotel_user,1,1,0,0

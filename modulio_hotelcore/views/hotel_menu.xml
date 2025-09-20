@@ -48,6 +48,14 @@
                   sequence="20"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
+        <!-- Room Status History Menu -->
+        <menuitem id="menu_hotel_room_status_history" 
+                  name="Room Status History" 
+                  parent="menu_hotel_main" 
+                  action="action_hotel_room_status_history_act_window" 
+                  sequence="30"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
         <!-- Settings Shortcut -->
         <record id="action_modulio_hotelcore_settings" model="ir.actions.act_window">
           <field name="name">Hotel Core Settings</field>

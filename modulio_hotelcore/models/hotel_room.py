@@ -187,6 +187,20 @@ class HotelRoom(models.Model):
         string='Room Blockings',
         help='Blockings for this room'
     )
+    
+    # Status history fields
+    status_history_count = fields.Integer(
+        string='Status History Count',
+        compute='_compute_status_history_count',
+        store=True,
+        help='Number of status change records for this room'
+    )
+    status_history_ids = fields.One2many(
+        'hotel.room.status.history',
+        'room_id',
+        string='Status History',
+        help='Status change history for this room'
+    )
 
     @api.depends('room_number', 'floor')
     def _compute_name(self):
@@ -200,6 +214,12 @@ class HotelRoom(models.Model):
             record.blocking_count = len(record.blocking_ids.filtered(
                 lambda b: b.status in ['planned', 'active']
             ))
+
+    @api.depends('status_history_ids')
+    def _compute_status_history_count(self):
+        """Compute the number of status history records for this room"""
+        for record in self:
+            record.status_history_count = len(record.status_history_ids)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -262,12 +282,36 @@ class HotelRoom(models.Model):
         if self.occupancy_state != 'reserved':
             raise ValidationError(f"Room must be reserved to check-in. Current state: {self.occupancy_state}")
         
+        # Store old values for history
+        old_values = {
+            'occupancy_state': self.occupancy_state,
+            'housekeeping_state': self.housekeeping_state,
+            'maintenance_required': self.maintenance_required,
+        }
+        
         self.write({
             'occupancy_state': 'occupied',
             'housekeeping_state': 'dirty',
             'status_change_reason': f"Check-in: {guest_name}. {notes}",
             'last_status_change': fields.Datetime.now()
         })
+        
+        # Create status history record
+        new_values = {
+            'occupancy_state': 'occupied',
+            'housekeeping_state': 'dirty',
+            'maintenance_required': self.maintenance_required,
+        }
+        
+        self.env['hotel.room.status.history'].create_status_change(
+            room_id=self.id,
+            change_type='occupancy',
+            old_values=old_values,
+            new_values=new_values,
+            change_reason=f"Check-in: {guest_name}. {notes}",
+            change_method='action_check_in',
+            change_notes=notes
+        )
 
     def action_check_out(self, guest_name='', notes=''):
         """Check-out: occupied -> available, housekeeping -> dirty"""
@@ -275,12 +319,36 @@ class HotelRoom(models.Model):
         if self.occupancy_state != 'occupied':
             raise ValidationError(f"Room must be occupied to check-out. Current state: {self.occupancy_state}")
         
+        # Store old values for history
+        old_values = {
+            'occupancy_state': self.occupancy_state,
+            'housekeeping_state': self.housekeeping_state,
+            'maintenance_required': self.maintenance_required,
+        }
+        
         self.write({
             'occupancy_state': 'available',
             'housekeeping_state': 'dirty',
             'status_change_reason': f"Check-out: {guest_name}. {notes}",
             'last_status_change': fields.Datetime.now()
         })
+        
+        # Create status history record
+        new_values = {
+            'occupancy_state': 'available',
+            'housekeeping_state': 'dirty',
+            'maintenance_required': self.maintenance_required,
+        }
+        
+        self.env['hotel.room.status.history'].create_status_change(
+            room_id=self.id,
+            change_type='occupancy',
+            old_values=old_values,
+            new_values=new_values,
+            change_reason=f"Check-out: {guest_name}. {notes}",
+            change_method='action_check_out',
+            change_notes=notes
+        )
 
     def action_reserve(self, guest_name='', notes=''):
         """Reserve: available -> reserved"""
@@ -288,11 +356,35 @@ class HotelRoom(models.Model):
         if self.occupancy_state != 'available':
             raise ValidationError(f"Room must be available to reserve. Current state: {self.occupancy_state}")
         
+        # Store old values for history
+        old_values = {
+            'occupancy_state': self.occupancy_state,
+            'housekeeping_state': self.housekeeping_state,
+            'maintenance_required': self.maintenance_required,
+        }
+        
         self.write({
             'occupancy_state': 'reserved',
             'status_change_reason': f"Reserved: {guest_name}. {notes}",
             'last_status_change': fields.Datetime.now()
         })
+        
+        # Create status history record
+        new_values = {
+            'occupancy_state': 'reserved',
+            'housekeeping_state': self.housekeeping_state,
+            'maintenance_required': self.maintenance_required,
+        }
+        
+        self.env['hotel.room.status.history'].create_status_change(
+            room_id=self.id,
+            change_type='occupancy',
+            old_values=old_values,
+            new_values=new_values,
+            change_reason=f"Reserved: {guest_name}. {notes}",
+            change_method='action_reserve',
+            change_notes=notes
+        )
 
     def action_cancel_reservation(self, reason=''):
         """Cancel reservation: reserved -> available"""
@@ -300,11 +392,35 @@ class HotelRoom(models.Model):
         if self.occupancy_state != 'reserved':
             raise ValidationError(f"Room must be reserved to cancel. Current state: {self.occupancy_state}")
         
+        # Store old values for history
+        old_values = {
+            'occupancy_state': self.occupancy_state,
+            'housekeeping_state': self.housekeeping_state,
+            'maintenance_required': self.maintenance_required,
+        }
+        
         self.write({
             'occupancy_state': 'available',
             'status_change_reason': f"Reservation cancelled: {reason}",
             'last_status_change': fields.Datetime.now()
         })
+        
+        # Create status history record
+        new_values = {
+            'occupancy_state': 'available',
+            'housekeeping_state': self.housekeeping_state,
+            'maintenance_required': self.maintenance_required,
+        }
+        
+        self.env['hotel.room.status.history'].create_status_change(
+            room_id=self.id,
+            change_type='occupancy',
+            old_values=old_values,
+            new_values=new_values,
+            change_reason=f"Reservation cancelled: {reason}",
+            change_method='action_cancel_reservation',
+            change_notes=reason
+        )
 
     def action_housekeeping_clean(self, notes=''):
         """Housekeeping: dirty -> clean"""
@@ -312,11 +428,35 @@ class HotelRoom(models.Model):
         if self.housekeeping_state != 'dirty':
             raise ValidationError(f"Room must be dirty to clean. Current state: {self.housekeeping_state}")
         
+        # Store old values for history
+        old_values = {
+            'occupancy_state': self.occupancy_state,
+            'housekeeping_state': self.housekeeping_state,
+            'maintenance_required': self.maintenance_required,
+        }
+        
         self.write({
             'housekeeping_state': 'clean',
             'status_change_reason': f"Cleaned: {notes}",
             'last_status_change': fields.Datetime.now()
         })
+        
+        # Create status history record
+        new_values = {
+            'occupancy_state': self.occupancy_state,
+            'housekeeping_state': 'clean',
+            'maintenance_required': self.maintenance_required,
+        }
+        
+        self.env['hotel.room.status.history'].create_status_change(
+            room_id=self.id,
+            change_type='housekeeping',
+            old_values=old_values,
+            new_values=new_values,
+            change_reason=f"Cleaned: {notes}",
+            change_method='action_housekeeping_clean',
+            change_notes=notes
+        )
 
     def action_housekeeping_inspect(self, notes=''):
         """Housekeeping: clean -> inspected"""
@@ -324,11 +464,35 @@ class HotelRoom(models.Model):
         if self.housekeeping_state != 'clean':
             raise ValidationError(f"Room must be clean to inspect. Current state: {self.housekeeping_state}")
         
+        # Store old values for history
+        old_values = {
+            'occupancy_state': self.occupancy_state,
+            'housekeeping_state': self.housekeeping_state,
+            'maintenance_required': self.maintenance_required,
+        }
+        
         self.write({
             'housekeeping_state': 'inspected',
             'status_change_reason': f"Inspected: {notes}",
             'last_status_change': fields.Datetime.now()
         })
+        
+        # Create status history record
+        new_values = {
+            'occupancy_state': self.occupancy_state,
+            'housekeeping_state': 'inspected',
+            'maintenance_required': self.maintenance_required,
+        }
+        
+        self.env['hotel.room.status.history'].create_status_change(
+            room_id=self.id,
+            change_type='housekeeping',
+            old_values=old_values,
+            new_values=new_values,
+            change_reason=f"Inspected: {notes}",
+            change_method='action_housekeeping_inspect',
+            change_notes=notes
+        )
 
     def is_sellable(self) -> bool:
         """Check if room is sellable based on occupancy_state, housekeeping_state and blocking."""
@@ -474,6 +638,18 @@ class HotelRoom(models.Model):
             'name': f'Room Blockings - {self.room_number}',
             'res_model': 'hotel.room.blocking',
             'view_mode': 'list,calendar,form',
+            'domain': [('room_id', '=', self.id)],
+            'context': {'default_room_id': self.id},
+        }
+
+    def action_view_status_history(self):
+        """Action to view status history for this room"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Status History - {self.room_number}',
+            'res_model': 'hotel.room.status.history',
+            'view_mode': 'list,kanban,form',
             'domain': [('room_id', '=', self.id)],
             'context': {'default_room_id': self.id},
         }
