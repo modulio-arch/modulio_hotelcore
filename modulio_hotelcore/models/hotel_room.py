@@ -24,12 +24,35 @@ class HotelRoom(models.Model):
         help='Room number (e.g., 101, 201A)'
     )
     floor = fields.Integer(
-        string='Floor',
+        string='Floor Number',
         required=True,
         index=True,
         tracking=True,
         help='Floor number where the room is located'
     )
+    floor_id = fields.Many2one(
+        'hotel.floor',
+        string='Floor',
+        required=False,  # Temporary: will be set to True after data migration
+        index=True,
+        ondelete='restrict',
+        tracking=True,
+        compute='_compute_floor_id',
+        store=True,
+        help='Floor where the room is located'
+    )
+    
+    @api.depends('floor')
+    def _compute_floor_id(self):
+        """Auto-populate floor_id based on floor number"""
+        for record in self:
+            if record.floor is not None and not record.floor_id:
+                floor = self.env['hotel.floor'].search([
+                    ('floor_number', '=', record.floor),
+                    ('company_id', '=', record.company_id.id)
+                ], limit=1)
+                if floor:
+                    record.floor_id = floor.id
     room_type_id = fields.Many2one(
         'hotel.room.type',
         string='Room Type',

@@ -15,6 +15,14 @@
                   parent="menu_hotel_main" 
                   sequence="30"/>
 
+        <!-- Hotel Floors Menu -->
+        <menuitem id="menu_hotel_floor" 
+                  name="Hotel Floors" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_floor_act_window" 
+                  sequence="5"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
         <!-- Room Types Menu -->
         <menuitem id="menu_hotel_room_type" 
                   name="Room Types" 

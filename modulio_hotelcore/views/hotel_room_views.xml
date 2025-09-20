@@ -10,6 +10,7 @@
                 <list string="Rooms">
                     <field name="room_number"/>
                     <field name="floor"/>
+                    <field name="floor_id" readonly="1"/>
                     <field name="room_type_id"/>
                     <field name="occupancy_state" widget="badge"/>
                     <field name="housekeeping_state" widget="badge"/>
@@ -47,6 +48,7 @@
                             <group>
                                 <field name="room_number"/>
                                 <field name="floor"/>
+                                <field name="floor_id" readonly="1"/>
                                 <field name="room_type_id"/>
                                 <field name="max_occupancy" readonly="1" help="Max occupancy is defined in Room Type. Click on Room Type to edit."/>
                             </group>
@@ -103,6 +105,7 @@
                     <field name="room_number"/>
                     <field name="room_type_id"/>
                     <field name="floor"/>
+                    <field name="floor_id"/>
                     <field name="occupancy_state"/>
                     <field name="housekeeping_state"/>
                     <field name="last_status_change" string="From (Last Status Change)" filter_domain="[('last_status_change', '&gt;=', self)]"/>
@@ -123,6 +126,7 @@
                     <group expand="0" string="Group By">
                         <filter string="Room Type" name="group_room_type" context="{'group_by': 'room_type_id'}"/>
                         <filter string="Floor" name="group_floor" context="{'group_by': 'floor'}"/>
+                        <filter string="Floor (Entity)" name="group_floor_entity" context="{'group_by': 'floor_id'}"/>
                         <filter string="Occupancy" name="group_occupancy" context="{'group_by': 'occupancy_state'}"/>
                         <filter string="Housekeeping" name="group_housekeeping" context="{'group_by': 'housekeeping_state'}"/>
                     </group>
@@ -138,6 +142,7 @@
                 <kanban string="Rooms" class="o_kanban_small_column">
                     <field name="room_number"/>
                     <field name="floor"/>
+                    <field name="floor_id" readonly="1"/>
                     <field name="room_type_id"/>
                     <field name="occupancy_state"/>
                     <field name="housekeeping_state"/>
@@ -153,7 +158,7 @@
                                                 Room <field name="room_number"/>
                                             </strong>
                                             <div class="o_kanban_record_subtitle">
-                                                Floor <field name="floor"/> - <field name="room_type_id"/>
+                                                Floor <field name="floor"/> - <field name="floor_id"/> - <field name="room_type_id"/>
                                             </div>
                                         </div>
                                         <div class="o_dropdown_kanban dropdown">

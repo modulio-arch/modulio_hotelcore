@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Hotel Floor List View -->
+        <record id="view_hotel_floor_list" model="ir.ui.view">
+            <field name="name">hotel.floor.list</field>
+            <field name="model">hotel.floor</field>
+            <field name="arch" type="xml">
+                <list string="Hotel Floors">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="floor_number"/>
+                    <field name="room_count"/>
+                    <field name="room_type_count"/>
+                    <field name="total_rooms"/>
+                    <field name="available_rooms"/>
+                    <field name="occupied_rooms"/>
+                    <field name="reserved_rooms"/>
+                    <field name="maintenance_required" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Hotel Floor Form View -->
+        <record id="view_hotel_floor_form" model="ir.ui.view">
+            <field name="name">hotel.floor.form</field>
+            <field name="model">hotel.floor</field>
+            <field name="arch" type="xml">
+                <form string="Hotel Floor">
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_rooms" type="object" class="oe_stat_button" icon="fa-bed">
+                                <field name="room_count" widget="statinfo" string="Rooms"/>
+                            </button>
+                            <button name="action_view_room_types" type="object" class="oe_stat_button" icon="fa-tags">
+                                <field name="room_type_count" widget="statinfo" string="Room Types"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Floor Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="floor_number"/>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="total_rooms" readonly="1"/>
+                                <field name="available_rooms" readonly="1"/>
+                                <field name="occupied_rooms" readonly="1"/>
+                                <field name="reserved_rooms" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Floor description..."/>
+                        </group>
+                        <group>
+                            <field name="maintenance_notes" placeholder="Maintenance notes..."/>
+                        </group>
+                        <notebook>
+                            <page string="Rooms" name="rooms">
+                                <field name="room_ids">
+                                    <list>
+                                        <field name="room_number"/>
+                                        <field name="room_type_id"/>
+                                        <field name="occupancy_state" widget="badge"/>
+                                        <field name="housekeeping_state" widget="badge"/>
+                                        <field name="maintenance_required" widget="boolean_toggle"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Hotel Floor Search View -->
+        <record id="view_hotel_floor_search" model="ir.ui.view">
+            <field name="name">hotel.floor.search</field>
+            <field name="model">hotel.floor</field>
+            <field name="arch" type="xml">
+                <search string="Hotel Floors">
+                    <field name="name"/>
+                    <field name="floor_number"/>
+                    <separator/>
+                    <filter string="Maintenance Required" name="maintenance_required" domain="[('maintenance_required', '=', True)]"/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Floor Number" name="group_floor_number" context="{'group_by': 'floor_number'}"/>
+                        <filter string="Room Type Count" name="group_room_type_count" context="{'group_by': 'room_type_count'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Hotel Floor Kanban View -->
+        <record id="view_hotel_floor_kanban" model="ir.ui.view">
+            <field name="name">hotel.floor.kanban</field>
+            <field name="model">hotel.floor</field>
+            <field name="arch" type="xml">
+                <kanban string="Hotel Floors">
+                    <field name="name"/>
+                    <field name="floor_number"/>
+                    <field name="room_count"/>
+                    <field name="available_rooms"/>
+                    <field name="occupied_rooms"/>
+                    <field name="reserved_rooms"/>
+                    <field name="maintenance_required"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="name"/>
+                                            </strong>
+                                            <div class="o_kanban_record_subtitle">
+                                                Floor <field name="floor_number"/>
+                                            </div>
+                                        </div>
+                                        <div class="o_dropdown_kanban dropdown">
+                                            <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" aria-label="Dropdown menu" title="Dropdown menu">
+                                                <span class="fa fa-ellipsis-v"/>
+                                            </a>
+                                            <div class="dropdown-menu" role="menu">
+                                                <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                                <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div class="o_kanban_record_bottom">
+                                            <div class="oe_kanban_bottom_left">
+                                                <span>Total: <field name="room_count"/></span>
+                                            </div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <span class="badge badge-success">Available: <field name="available_rooms"/></span>
+                                                <span class="badge badge-warning">Occupied: <field name="occupied_rooms"/></span>
+                                                <span class="badge badge-info">Reserved: <field name="reserved_rooms"/></span>
+                                                <span t-if="record.maintenance_required.raw_value" class="fa fa-wrench text-warning" title="Maintenance Required"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Hotel Floor Action -->
+        <record id="action_hotel_floor_act_window" model="ir.actions.act_window">
+            <field name="name">Hotel Floors</field>
+            <field name="res_model">hotel.floor</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="search_view_id" ref="view_hotel_floor_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first hotel floor!
+                </p>
+                <p>
+                    Hotel floors help organize your rooms by level. Each floor can contain
+                    multiple rooms of different types.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
