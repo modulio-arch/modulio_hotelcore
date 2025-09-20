@@ -56,6 +56,14 @@
                   sequence="30"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
+        <!-- Hotel Configuration Menu -->
+        <menuitem id="menu_hotel_configuration" 
+                  name="Hotel Configuration" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_configuration_act_window" 
+                  sequence="5"
+                  groups="modulio_hotelcore.group_hotel_manager"/>
+
         <!-- Settings Shortcut -->
         <record id="action_modulio_hotelcore_settings" model="ir.actions.act_window">
           <field name="name">Hotel Core Settings</field>

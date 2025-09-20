@@ -332,5 +332,55 @@
             <field name="status">planned</field>
         </record>
 
+    <!-- Hotel Configuration Demo Data -->
+    <record id="hotel_config_demo" model="hotel.configuration">
+        <field name="hotel_name">Modulio Hotel Demo</field>
+        <field name="hotel_code">H001</field>
+        <field name="description">Demo hotel configuration for Modulio Hotel Core module</field>
+        <field name="address">Jl. Sudirman No. 123</field>
+        <field name="city">Jakarta</field>
+        <field name="country_id" ref="base.id"/>
+        <field name="zip">12190</field>
+        <field name="phone">+62-21-12345678</field>
+        <field name="email">info@moduliohotel.com</field>
+        <field name="website">https://www.moduliohotel.com</field>
+        <field name="timezone">Asia/Jakarta</field>
+        <field name="currency_id" ref="base.IDR"/>
+        <field name="check_in_time">14.0</field>
+        <field name="check_out_time">12.0</field>
+        <field name="early_check_in_allowed">True</field>
+        <field name="late_check_out_allowed">True</field>
+        <field name="early_check_in_fee">50000</field>
+        <field name="late_check_out_fee">75000</field>
+        <field name="auto_housekeeping">True</field>
+        <field name="housekeeping_inspection_required">True</field>
+        <field name="maintenance_auto_assign">False</field>
+        <field name="room_status_auto_update">True</field>
+        <field name="advance_booking_days">365</field>
+        <field name="minimum_stay_nights">1</field>
+        <field name="maximum_stay_nights">30</field>
+        <field name="cancellation_hours">24</field>
+        <field name="no_show_hours">2</field>
+        <field name="base_price_currency" ref="base.IDR"/>
+        <field name="tax_included">True</field>
+        <field name="service_charge_rate">10.0</field>
+        <field name="government_tax_rate">10.0</field>
+        <field name="housekeeping_shift_start">8.0</field>
+        <field name="housekeeping_shift_end">17.0</field>
+        <field name="housekeeping_rooms_per_staff">15</field>
+        <field name="housekeeping_inspection_time">15.0</field>
+        <field name="maintenance_priority_levels">3</field>
+        <field name="maintenance_response_time">4</field>
+        <field name="maintenance_escalation_hours">24</field>
+        <field name="key_card_system">True</field>
+        <field name="cctv_monitoring">True</field>
+        <field name="security_24_7">True</field>
+        <field name="guest_registration_required">True</field>
+        <field name="pms_integration">False</field>
+        <field name="daily_report_time">8.0</field>
+        <field name="weekly_report_day">0</field>
+        <field name="monthly_report_day">1</field>
+    </record>
+
     </data>
 </odoo>

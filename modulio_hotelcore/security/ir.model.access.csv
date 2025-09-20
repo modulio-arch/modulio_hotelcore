@@ -3,6 +3,8 @@ access_hotel_floor_user,hotel.floor.user,model_hotel_floor,group_hotel_user,1,0,
 access_hotel_floor_manager,hotel.floor.manager,model_hotel_floor,group_hotel_manager,1,1,1,1
 access_hotel_room_status_history_user,hotel.room.status.history.user,model_hotel_room_status_history,group_hotel_user,1,0,0,0
 access_hotel_room_status_history_manager,hotel.room.status.history.manager,model_hotel_room_status_history,group_hotel_manager,1,1,1,1
+access_hotel_configuration_user,hotel.configuration.user,model_hotel_configuration,group_hotel_user,1,0,0,0
+access_hotel_configuration_manager,hotel.configuration.manager,model_hotel_configuration,group_hotel_manager,1,1,1,1
 access_hotel_room_type_user,hotel.room.type.user,model_hotel_room_type,group_hotel_user,1,0,0,0
 access_hotel_room_type_manager,hotel.room.type.manager,model_hotel_room_type,group_hotel_manager,1,1,1,1
 access_hotel_room_user,hotel.room.user,model_hotel_room,group_hotel_user,1,1,0,0
