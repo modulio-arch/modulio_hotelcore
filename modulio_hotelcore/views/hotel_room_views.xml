@@ -41,6 +41,9 @@
                             <button name="action_view_status_history" type="object" class="oe_stat_button" icon="fa-history">
                                 <field name="status_history_count" widget="statinfo" string="Status History"/>
                             </button>
+                            <button name="action_view_room_amenities" type="object" class="oe_stat_button" icon="fa-star">
+                                <field name="room_amenity_count" widget="statinfo" string="Amenities"/>
+                            </button>
                         </div>
                         <div class="oe_title">
                             <h1>
@@ -100,6 +103,20 @@
                                         <field name="changed_by"/>
                                         <field name="change_date"/>
                                         <field name="change_reason"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Room Amenities" name="room_amenities">
+                                <field name="room_amenity_ids">
+                                    <list>
+                                        <field name="amenity_name"/>
+                                        <field name="amenity_category_id"/>
+                                        <field name="amenity_type" widget="badge"/>
+                                        <field name="assignment_type" widget="badge"/>
+                                        <field name="final_price"/>
+                                        <field name="is_available" widget="boolean_toggle"/>
+                                        <field name="usage_count"/>
+                                        <field name="revenue_generated"/>
                                     </list>
                                 </field>
                             </page>

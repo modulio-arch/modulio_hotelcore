@@ -5,6 +5,12 @@ access_hotel_room_status_history_user,hotel.room.status.history.user,model_hotel
 access_hotel_room_status_history_manager,hotel.room.status.history.manager,model_hotel_room_status_history,group_hotel_manager,1,1,1,1
 access_hotel_configuration_user,hotel.configuration.user,model_hotel_configuration,group_hotel_user,1,0,0,0
 access_hotel_configuration_manager,hotel.configuration.manager,model_hotel_configuration,group_hotel_manager,1,1,1,1
+access_hotel_amenity_category_user,hotel.amenity.category.user,model_hotel_amenity_category,group_hotel_user,1,0,0,0
+access_hotel_amenity_category_manager,hotel.amenity.category.manager,model_hotel_amenity_category,group_hotel_manager,1,1,1,1
+access_hotel_amenity_user,hotel.amenity.user,model_hotel_amenity,group_hotel_user,1,0,0,0
+access_hotel_amenity_manager,hotel.amenity.manager,model_hotel_amenity,group_hotel_manager,1,1,1,1
+access_hotel_room_amenity_user,hotel.room.amenity.user,model_hotel_room_amenity,group_hotel_user,1,0,0,0
+access_hotel_room_amenity_manager,hotel.room.amenity.manager,model_hotel_room_amenity,group_hotel_manager,1,1,1,1
 access_hotel_room_type_user,hotel.room.type.user,model_hotel_room_type,group_hotel_user,1,0,0,0
 access_hotel_room_type_manager,hotel.room.type.manager,model_hotel_room_type,group_hotel_manager,1,1,1,1
 access_hotel_room_user,hotel.room.user,model_hotel_room,group_hotel_user,1,1,0,0

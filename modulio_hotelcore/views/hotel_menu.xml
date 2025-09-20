@@ -64,6 +64,22 @@
                   sequence="5"
                   groups="modulio_hotelcore.group_hotel_manager"/>
 
+        <!-- Amenity Categories Menu -->
+        <menuitem id="menu_hotel_amenity_category" 
+                  name="Amenity Categories" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_amenity_category_act_window" 
+                  sequence="15"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <!-- Hotel Amenities Menu -->
+        <menuitem id="menu_hotel_amenity" 
+                  name="Hotel Amenities" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_amenity_act_window" 
+                  sequence="25"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
         <!-- Settings Shortcut -->
         <record id="action_modulio_hotelcore_settings" model="ir.actions.act_window">
           <field name="name">Hotel Core Settings</field>

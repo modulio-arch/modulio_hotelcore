@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Hotel Amenity Category List View -->
+        <record id="view_hotel_amenity_category_list" model="ir.ui.view">
+            <field name="name">hotel.amenity.category.list</field>
+            <field name="model">hotel.amenity.category</field>
+            <field name="arch" type="xml">
+                <list string="Amenity Categories">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="amenity_count"/>
+                    <field name="active_amenity_count"/>
+                    <field name="total_usage"/>
+                    <field name="total_revenue"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Hotel Amenity Category Form View -->
+        <record id="view_hotel_amenity_category_form" model="ir.ui.view">
+            <field name="name">hotel.amenity.category.form</field>
+            <field name="model">hotel.amenity.category</field>
+            <field name="arch" type="xml">
+                <form string="Amenity Category">
+                    <header>
+                        <button name="action_view_amenities" type="object" string="View Amenities" class="btn-primary"/>
+                        <button name="action_view_analytics" type="object" string="View Analytics" class="btn-secondary"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Enter category name..."/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="icon"/>
+                                <field name="color"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="description"/>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Amenities" name="amenities">
+                                <field name="amenity_ids">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                        <field name="amenity_type" widget="badge"/>
+                                        <field name="price"/>
+                                        <field name="is_available" widget="boolean_toggle"/>
+                                        <field name="usage_count"/>
+                                        <field name="revenue_generated"/>
+                                    </list>
+                                </field>
+                            </page>
+                            
+                            <page string="Analytics" name="analytics">
+                                <group>
+                                    <group>
+                                        <field name="amenity_count" readonly="1"/>
+                                        <field name="active_amenity_count" readonly="1"/>
+                                        <field name="total_usage" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="total_revenue" readonly="1"/>
+                                        <field name="average_popularity" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Hotel Amenity Category Search View -->
+        <record id="view_hotel_amenity_category_search" model="ir.ui.view">
+            <field name="name">hotel.amenity.category.search</field>
+            <field name="model">hotel.amenity.category</field>
+            <field name="arch" type="xml">
+                <search string="Amenity Categories">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <separator/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Hotel Amenity Category Kanban View -->
+        <record id="view_hotel_amenity_category_kanban" model="ir.ui.view">
+            <field name="name">hotel.amenity.category.kanban</field>
+            <field name="model">hotel.amenity.category</field>
+            <field name="arch" type="xml">
+                <kanban string="Amenity Categories">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="amenity_count"/>
+                    <field name="active_amenity_count"/>
+                    <field name="total_usage"/>
+                    <field name="total_revenue"/>
+                    <field name="active"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="name"/>
+                                            </strong>
+                                            <div class="o_kanban_record_subtitle">
+                                                <field name="code"/>
+                                            </div>
+                                        </div>
+                                        <div class="o_dropdown_kanban dropdown">
+                                            <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" aria-label="Dropdown menu" title="Dropdown menu">
+                                                <span class="fa fa-ellipsis-v"/>
+                                            </a>
+                                            <div class="dropdown-menu" role="menu">
+                                                <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                                <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div class="o_kanban_record_bottom">
+                                            <div class="oe_kanban_bottom_left">
+                                                <span><field name="amenity_count"/> Amenities</span>
+                                            </div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <span><field name="total_usage"/> Uses</span>
+                                                <span t-if="record.active.raw_value" class="badge badge-success">Active</span>
+                                                <span t-else="" class="badge badge-secondary">Inactive</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Hotel Amenity List View -->
+        <record id="view_hotel_amenity_list" model="ir.ui.view">
+            <field name="name">hotel.amenity.list</field>
+            <field name="model">hotel.amenity</field>
+            <field name="arch" type="xml">
+                <list string="Hotel Amenities">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="category_id"/>
+                    <field name="amenity_type" widget="badge"/>
+                    <field name="price"/>
+                    <field name="is_available" widget="boolean_toggle"/>
+                    <field name="access_type"/>
+                    <field name="usage_count"/>
+                    <field name="revenue_generated"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Hotel Amenity Form View -->
+        <record id="view_hotel_amenity_form" model="ir.ui.view">
+            <field name="name">hotel.amenity.form</field>
+            <field name="model">hotel.amenity</field>
+            <field name="arch" type="xml">
+                <form string="Hotel Amenity">
+                    <header>
+                        <button name="action_view_usage_history" type="object" string="Usage History" class="btn-primary"/>
+                        <button name="action_schedule_maintenance" type="object" string="Schedule Maintenance" class="btn-secondary"/>
+                        <button name="action_mark_unavailable" type="object" string="Mark Unavailable" class="btn-warning" 
+                                invisible="not is_available"/>
+                        <button name="action_mark_available" type="object" string="Mark Available" class="btn-success" 
+                                invisible="is_available"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Enter amenity name..."/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="category_id"/>
+                                <field name="amenity_type"/>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="price" invisible="amenity_type != 'paid'"/>
+                                <field name="currency_id" invisible="amenity_type != 'paid'"/>
+                                <field name="price_type" invisible="amenity_type != 'paid'"/>
+                                <field name="is_available" widget="boolean_toggle"/>
+                                <field name="access_type"/>
+                                <field name="requires_booking"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="description"/>
+                        </group>
+                        
+                        <group>
+                            <group>
+                                <field name="location"/>
+                                <field name="floor_id"/>
+                                <field name="room_number"/>
+                            </group>
+                            <group>
+                                <field name="max_capacity"/>
+                                <field name="operating_hours"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="full_location" readonly="1"/>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Maintenance" name="maintenance">
+                                <group>
+                                    <group>
+                                        <field name="maintenance_required"/>
+                                        <field name="last_maintenance_date"/>
+                                        <field name="next_maintenance_date"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="maintenance_notes"/>
+                                </group>
+                            </page>
+                            
+                            <page string="Analytics" name="analytics">
+                                <group>
+                                    <group>
+                                        <field name="usage_count" readonly="1"/>
+                                        <field name="revenue_generated" readonly="1"/>
+                                        <field name="popularity_score" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Hotel Amenity Search View -->
+        <record id="view_hotel_amenity_search" model="ir.ui.view">
+            <field name="name">hotel.amenity.search</field>
+            <field name="model">hotel.amenity</field>
+            <field name="arch" type="xml">
+                <search string="Hotel Amenities">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="category_id"/>
+                    <field name="location"/>
+                    <field name="floor_id"/>
+                    <separator/>
+                    <filter string="Free" name="free" domain="[('amenity_type', '=', 'free')]"/>
+                    <filter string="Paid" name="paid" domain="[('amenity_type', '=', 'paid')]"/>
+                    <filter string="Available" name="available" domain="[('is_available', '=', True)]"/>
+                    <filter string="Unavailable" name="unavailable" domain="[('is_available', '=', False)]"/>
+                    <filter string="Requires Maintenance" name="maintenance" domain="[('maintenance_required', '=', True)]"/>
+                    <separator/>
+                    <filter string="Public Access" name="public" domain="[('access_type', '=', 'public')]"/>
+                    <filter string="Guest Only" name="guest_only" domain="[('access_type', '=', 'guest_only')]"/>
+                    <filter string="Room Only" name="room_only" domain="[('access_type', '=', 'room_only')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
+                        <filter string="Amenity Type" name="group_amenity_type" context="{'group_by': 'amenity_type'}"/>
+                        <filter string="Access Type" name="group_access_type" context="{'group_by': 'access_type'}"/>
+                        <filter string="Floor" name="group_floor" context="{'group_by': 'floor_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Hotel Amenity Kanban View -->
+        <record id="view_hotel_amenity_kanban" model="ir.ui.view">
+            <field name="name">hotel.amenity.kanban</field>
+            <field name="model">hotel.amenity</field>
+            <field name="arch" type="xml">
+                <kanban string="Hotel Amenities">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="category_id"/>
+                    <field name="amenity_type"/>
+                    <field name="price"/>
+                    <field name="is_available"/>
+                    <field name="access_type"/>
+                    <field name="usage_count"/>
+                    <field name="revenue_generated"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="name"/>
+                                            </strong>
+                                            <div class="o_kanban_record_subtitle">
+                                                <field name="category_id"/>
+                                            </div>
+                                        </div>
+                                        <div class="o_dropdown_kanban dropdown">
+                                            <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" aria-label="Dropdown menu" title="Dropdown menu">
+                                                <span class="fa fa-ellipsis-v"/>
+                                            </a>
+                                            <div class="dropdown-menu" role="menu">
+                                                <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                                <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div class="o_kanban_record_bottom">
+                                            <div class="oe_kanban_bottom_left">
+                                                <span><field name="amenity_type" widget="badge"/></span>
+                                                <span t-if="record.price.raw_value > 0"><field name="price"/></span>
+                                            </div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <span><field name="usage_count"/> Uses</span>
+                                                <span t-if="record.is_available.raw_value" class="badge badge-success">Available</span>
+                                                <span t-else="" class="badge badge-warning">Unavailable</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Hotel Amenity Category Action -->
+        <record id="action_hotel_amenity_category_act_window" model="ir.actions.act_window">
+            <field name="name">Amenity Categories</field>
+            <field name="res_model">hotel.amenity.category</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="search_view_id" ref="view_hotel_amenity_category_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No amenity categories found!
+                </p>
+                <p>
+                    Create amenity categories to organize hotel amenities
+                    (e.g., Technology, Recreation, Dining, etc.).
+                </p>
+            </field>
+        </record>
+
+        <!-- Hotel Amenity Action -->
+        <record id="action_hotel_amenity_act_window" model="ir.actions.act_window">
+            <field name="name">Hotel Amenities</field>
+            <field name="res_model">hotel.amenity</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="search_view_id" ref="view_hotel_amenity_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hotel amenities found!
+                </p>
+                <p>
+                    Create hotel amenities to define the facilities and services
+                    available to guests (e.g., WiFi, Swimming Pool, Gym, etc.).
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

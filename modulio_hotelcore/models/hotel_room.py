@@ -201,6 +201,20 @@ class HotelRoom(models.Model):
         string='Status History',
         help='Status change history for this room'
     )
+    
+    # Room amenities fields
+    room_amenity_count = fields.Integer(
+        string='Amenities Count',
+        compute='_compute_room_amenity_count',
+        store=True,
+        help='Number of amenities assigned to this room'
+    )
+    room_amenity_ids = fields.One2many(
+        'hotel.room.amenity',
+        'room_id',
+        string='Room Amenities',
+        help='Amenities assigned to this room'
+    )
 
     @api.depends('room_number', 'floor')
     def _compute_name(self):
@@ -220,6 +234,12 @@ class HotelRoom(models.Model):
         """Compute the number of status history records for this room"""
         for record in self:
             record.status_history_count = len(record.status_history_ids)
+
+    @api.depends('room_amenity_ids')
+    def _compute_room_amenity_count(self):
+        """Compute the number of amenities assigned to this room"""
+        for record in self:
+            record.room_amenity_count = len(record.room_amenity_ids)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -649,6 +669,18 @@ class HotelRoom(models.Model):
             'type': 'ir.actions.act_window',
             'name': f'Status History - {self.room_number}',
             'res_model': 'hotel.room.status.history',
+            'view_mode': 'list,kanban,form',
+            'domain': [('room_id', '=', self.id)],
+            'context': {'default_room_id': self.id},
+        }
+
+    def action_view_room_amenities(self):
+        """Action to view amenities for this room"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Room Amenities - {self.room_number}',
+            'res_model': 'hotel.room.amenity',
             'view_mode': 'list,kanban,form',
             'domain': [('room_id', '=', self.id)],
             'context': {'default_room_id': self.id},
