@@ -126,6 +126,14 @@
                   sequence="1"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
+        <!-- Analytics Dashboard Menu -->
+        <menuitem id="menu_hotel_analytics_dashboard" 
+                  name="Analytics Dashboard" 
+                  parent="menu_hotel_main" 
+                  action="action_hotel_analytics_act_window" 
+                  sequence="2"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
         <!-- Analytics Menu Items -->
         <menuitem id="menu_hotel_revenue_analytics" 
                   name="Revenue Analytics" 

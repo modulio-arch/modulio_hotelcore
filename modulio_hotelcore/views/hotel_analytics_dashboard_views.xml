@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Hotel Analytics Dashboard Form View -->
+        <record id="view_hotel_analytics_form" model="ir.ui.view">
+            <field name="name">hotel.analytics.form</field>
+            <field name="model">hotel.analytics</field>
+            <field name="arch" type="xml">
+                <form string="Hotel Analytics Dashboard">
+                    <header>
+                        <button name="action_refresh_analytics" type="object" string="Refresh Data" class="btn-primary"/>
+                        <button name="action_export_analytics" type="object" string="Export Data" class="btn-secondary"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Dashboard Name"/>
+                            </h1>
+                        </div>
+                        
+                        <!-- Date Range -->
+                        <group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+                            <group>
+                                <field name="currency_id" groups="base.group_multi_company"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        
+                        <!-- KPI Cards Section -->
+                        <div class="oe_dashboard">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>Key Performance Indicators</h2>
+                                </div>
+                            </div>
+                            
+                            <!-- Room Status KPIs -->
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="o_dashboard_card">
+                                        <h4>Total Rooms</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="total_rooms" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="o_dashboard_card">
+                                        <h4>Available</h4>
+                                        <div class="o_dashboard_value text-success">
+                                            <field name="available_rooms" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="o_dashboard_card">
+                                        <h4>Occupied</h4>
+                                        <div class="o_dashboard_value text-primary">
+                                            <field name="occupied_rooms" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="o_dashboard_card">
+                                        <h4>Reserved</h4>
+                                        <div class="o_dashboard_value text-warning">
+                                            <field name="reserved_rooms" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="o_dashboard_card">
+                                        <h4>Out of Service</h4>
+                                        <div class="o_dashboard_value text-danger">
+                                            <field name="out_of_service_rooms" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="o_dashboard_card">
+                                        <h4>Occupancy Rate</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="occupancy_rate" readonly="1"/>%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Revenue KPIs -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3>Revenue Metrics</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="o_dashboard_card">
+                                        <h4>Total Revenue</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="total_revenue" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_dashboard_card">
+                                        <h4>Room Revenue</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="room_revenue" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_dashboard_card">
+                                        <h4>Amenity Revenue</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="amenity_revenue" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_dashboard_card">
+                                        <h4>Average Daily Rate</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="average_daily_rate" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Performance KPIs -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3>Performance Metrics</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="o_dashboard_card">
+                                        <h4>Average Stay Duration</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="average_stay_duration" readonly="1"/> days
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="o_dashboard_card">
+                                        <h4>Cancellation Rate</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="booking_cancellation_rate" readonly="1"/>%
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="o_dashboard_card">
+                                        <h4>Customer Satisfaction</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="customer_satisfaction_score" readonly="1"/>/5
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Maintenance KPIs -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3>Maintenance Metrics</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="o_dashboard_card">
+                                        <h4>Maintenance Requests</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="maintenance_requests_count" readonly="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="o_dashboard_card">
+                                        <h4>Completion Rate</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="maintenance_completion_rate" readonly="1"/>%
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="o_dashboard_card">
+                                        <h4>Average Duration</h4>
+                                        <div class="o_dashboard_value">
+                                            <field name="average_maintenance_duration" readonly="1"/> hours
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Hotel Analytics Dashboard List View -->
+        <record id="view_hotel_analytics_list" model="ir.ui.view">
+            <field name="name">hotel.analytics.list</field>
+            <field name="model">hotel.analytics</field>
+            <field name="arch" type="xml">
+                <list string="Analytics Dashboards">
+                    <field name="name"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="total_rooms"/>
+                    <field name="occupancy_rate"/>
+                    <field name="total_revenue"/>
+                    <field name="maintenance_requests_count"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Hotel Analytics Dashboard Search View -->
+        <record id="view_hotel_analytics_search" model="ir.ui.view">
+            <field name="name">hotel.analytics.search</field>
+            <field name="model">hotel.analytics</field>
+            <field name="arch" type="xml">
+                <search string="Analytics Dashboards">
+                    <field name="name"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <separator/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Hotel Analytics Dashboard Action -->
+        <record id="action_hotel_analytics_act_window" model="ir.actions.act_window">
+            <field name="name">Hotel Analytics Dashboard</field>
+            <field name="res_model">hotel.analytics</field>
+            <field name="view_mode">form,list</field>
+            <field name="search_view_id" ref="view_hotel_analytics_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first analytics dashboard!
+                </p>
+                <p>
+                    Track key performance indicators, revenue metrics, and operational insights
+                    for your hotel business.
+                </p>
+            </field>
+        </record>
+
+        <!-- Hotel Analytics Dashboard Template (QWeb) -->
+        <template id="hotel_analytics_dashboard_template" name="Hotel Analytics Dashboard Template">
+            <div class="o_dashboard">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>Hotel Analytics Dashboard</h1>
+                        <p>Real-time insights and performance metrics for your hotel operations.</p>
+                    </div>
+                </div>
+                
+                <!-- KPI Cards Row -->
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="o_dashboard_card">
+                            <h4>Total Rooms</h4>
+                            <div class="o_dashboard_value" t-esc="total_rooms"/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="o_dashboard_card">
+                            <h4>Available</h4>
+                            <div class="o_dashboard_value text-success" t-esc="available_rooms"/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="o_dashboard_card">
+                            <h4>Occupied</h4>
+                            <div class="o_dashboard_value text-primary" t-esc="occupied_rooms"/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="o_dashboard_card">
+                            <h4>Reserved</h4>
+                            <div class="o_dashboard_value text-warning" t-esc="reserved_rooms"/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="o_dashboard_card">
+                            <h4>Out of Service</h4>
+                            <div class="o_dashboard_value text-danger" t-esc="out_of_service_rooms"/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="o_dashboard_card">
+                            <h4>Occupancy Rate</h4>
+                            <div class="o_dashboard_value" t-esc="occupancy_rate"/>%
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Revenue Row -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="o_dashboard_card">
+                            <h4>Total Revenue</h4>
+                            <div class="o_dashboard_value" t-esc="total_revenue"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="o_dashboard_card">
+                            <h4>Room Revenue</h4>
+                            <div class="o_dashboard_value" t-esc="room_revenue"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="o_dashboard_card">
+                            <h4>Amenity Revenue</h4>
+                            <div class="o_dashboard_value" t-esc="amenity_revenue"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="o_dashboard_card">
+                            <h4>Average Daily Rate</h4>
+                            <div class="o_dashboard_value" t-esc="average_daily_rate"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </data>
+</odoo>

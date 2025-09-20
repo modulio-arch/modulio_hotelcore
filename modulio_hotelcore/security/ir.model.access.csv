@@ -25,3 +25,7 @@ access_hotel_room_availability_wizard_user,hotel.room.availability.wizard.user,m
 access_hotel_room_availability_wizard_manager,hotel.room.availability.wizard.manager,model_hotel_room_availability_wizard,group_hotel_manager,1,1,1,1
 access_res_config_settings_user,res.config.settings.user,model_res_config_settings,group_hotel_user,1,0,0,0
 access_res_config_settings_manager,res.config.settings.manager,model_res_config_settings,group_hotel_manager,1,1,1,1
+access_hotel_analytics_user,hotel.analytics.user,model_hotel_analytics,group_hotel_user,1,0,0,0
+access_hotel_analytics_manager,hotel.analytics.manager,model_hotel_analytics,group_hotel_manager,1,1,1,1
+access_hotel_analytics_service_user,hotel.analytics.service.user,model_hotel_analytics_service,group_hotel_user,1,0,0,0
+access_hotel_analytics_service_manager,hotel.analytics.service.manager,model_hotel_analytics_service,group_hotel_manager,1,1,1,1

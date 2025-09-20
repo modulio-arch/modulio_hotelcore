@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Hotel Core',
-    'version': '18.0.1.0.14',
+    'version': '18.0.1.0.15',
     'category': 'Modulio',
     'summary': 'Core hotel management module providing room types, rooms, and basic security',
     'description': """
@@ -33,6 +33,7 @@ This module is essential for Front Office and Housekeeping modules as they depen
         'views/hotel_amenity_views.xml',
         'views/hotel_maintenance_views.xml',
         'views/hotel_analytics_views.xml',
+        'views/hotel_analytics_dashboard_views.xml',
         'views/hotel_room_blocking_views.xml',
         'views/hotel_room_availability_calendar.xml',
         'views/hotel_dashboard_action.xml',
