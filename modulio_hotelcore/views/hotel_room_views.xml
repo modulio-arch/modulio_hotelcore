@@ -10,7 +10,6 @@
                 <list string="Rooms">
                     <field name="room_number"/>
                     <field name="floor"/>
-                    <field name="floor_id" readonly="1"/>
                     <field name="room_type_id"/>
                     <field name="state" widget="badge"/>
                     <field name="max_occupancy"/>
@@ -64,17 +63,6 @@
                                 groups="modulio_hotelcore.group_hotel_housekeeping"/>
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button name="action_view_blockings" type="object" class="oe_stat_button" icon="fa-calendar-times-o">
-                                <field name="blocking_count" widget="statinfo" string="Blockings"/>
-                            </button>
-                            <button name="action_view_status_history" type="object" class="oe_stat_button" icon="fa-history">
-                                <field name="status_history_count" widget="statinfo" string="Status History"/>
-                            </button>
-                            <button name="action_view_room_amenities" type="object" class="oe_stat_button" icon="fa-star">
-                                <field name="room_amenity_count" widget="statinfo" string="Amenities"/>
-                            </button>
-                        </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>
@@ -84,7 +72,6 @@
                             <group>
                                 <field name="room_number"/>
                                 <field name="floor"/>
-                                <field name="floor_id" readonly="1"/>
                                 <field name="room_type_id"/>
                                 <field name="max_occupancy" readonly="1" help="Max occupancy is defined in Room Type. Click on Room Type to edit."/>
                             </group>
@@ -110,44 +97,6 @@
                             <field name="status_change_reason" readonly="1"/>
                             <field name="last_status_change" readonly="1"/>
                         </group>
-                        <notebook>
-                            <page string="Room Blockings" name="blockings">
-                                <field name="blocking_ids">
-                                    <list>
-                                        <field name="name"/>
-                                        <field name="start_date"/>
-                                        <field name="end_date"/>
-                                        <field name="blocking_type"/>
-                                        <field name="responsible_user_id"/>
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Status History" name="status_history">
-                                <field name="status_history_ids">
-                                    <list>
-                                        <field name="change_type" widget="badge"/>
-                                        <field name="status_summary"/>
-                                        <field name="changed_by"/>
-                                        <field name="change_date"/>
-                                        <field name="change_reason"/>
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Room Amenities" name="room_amenities">
-                                <field name="room_amenity_ids">
-                                    <list>
-                                        <field name="amenity_name"/>
-                                        <field name="amenity_category_id"/>
-                                        <field name="amenity_type" widget="badge"/>
-                                        <field name="assignment_type" widget="badge"/>
-                                        <field name="final_price"/>
-                                        <field name="is_available" widget="boolean_toggle"/>
-                                        <field name="usage_count"/>
-                                        <field name="revenue_generated"/>
-                                    </list>
-                                </field>
-                            </page>
-                        </notebook>
                     </sheet>
                     <chatter/>
                 </form>
@@ -163,7 +112,6 @@
                     <field name="room_number"/>
                     <field name="room_type_id"/>
                     <field name="floor"/>
-                    <field name="floor_id"/>
                     <field name="state"/>
                     <field name="last_status_change" string="From (Last Status Change)" filter_domain="[('last_status_change', '&gt;=', self)]"/>
                     <field name="last_status_change" string="To (Last Status Change)" filter_domain="[('last_status_change', '&lt;=', self)]"/>
@@ -184,7 +132,6 @@
                     <group expand="0" string="Group By">
                         <filter string="Room Type" name="group_room_type" context="{'group_by': 'room_type_id'}"/>
                         <filter string="Floor" name="group_floor" context="{'group_by': 'floor'}"/>
-                        <filter string="Floor (Entity)" name="group_floor_entity" context="{'group_by': 'floor_id'}"/>
                         <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
                     </group>
                 </search>
@@ -199,7 +146,6 @@
                 <kanban string="Rooms" class="o_kanban_small_column">
                     <field name="room_number"/>
                     <field name="floor"/>
-                    <field name="floor_id" readonly="1"/>
                     <field name="room_type_id"/>
                     <field name="state"/>
                     <field name="max_occupancy"/>
@@ -214,7 +160,7 @@
                                                 Room <field name="room_number"/>
                                             </strong>
                                             <div class="o_kanban_record_subtitle">
-                                                Floor <field name="floor"/> - <field name="floor_id"/> - <field name="room_type_id"/>
+                                                Floor <field name="floor"/> - <field name="room_type_id"/>
                                             </div>
                                         </div>
                                         <div class="o_dropdown_kanban dropdown">
