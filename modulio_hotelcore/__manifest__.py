@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Hotel Core',
-    'version': '18.0.1.0.13',
+    'version': '18.0.1.0.14',
     'category': 'Modulio',
     'summary': 'Core hotel management module providing room types, rooms, and basic security',
     'description': """

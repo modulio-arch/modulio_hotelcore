@@ -185,7 +185,7 @@
                             <group>
                                 <field name="requested_by"/>
                                 <field name="assigned_to"/>
-                                <field name="department_id"/>
+                                <field name="department"/>
                             </group>
                         </group>
                         

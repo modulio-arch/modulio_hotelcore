@@ -126,10 +126,9 @@ class HotelMaintenanceRequest(models.Model):
         index=True,
         help='User assigned to perform the maintenance'
     )
-    department_id = fields.Many2one(
-        'hr.department',
+    department = fields.Char(
         string='Department',
-        help='Department responsible for the maintenance'
+        help='Department responsible for the maintenance (e.g., Engineering, Housekeeping, IT)'
     )
 
     # Scheduling

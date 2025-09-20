@@ -49,7 +49,7 @@ class HotelRoomType(models.Model):
         ondelete='restrict'
     )
     amenities = fields.Text(
-        string='Amenities',
+        string='Amenities Description',
         help='List of amenities included in this room type'
     )
     sequence = fields.Integer(
