@@ -13,14 +13,53 @@
         <menuitem id="menu_hotel_config" 
                   name="Configuration" 
                   parent="menu_hotel_main" 
-                  sequence="30"/>
+                  sequence="50"/>
+
+        <!-- Rooms Menu -->
+        <menuitem id="menu_hotel_room" 
+                  name="Rooms" 
+                  parent="menu_hotel_main" 
+                  action="action_hotel_room_act_window" 
+                  sequence="20"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <!-- Maintenance Requests Menu -->
+        <menuitem id="menu_hotel_maintenance_request" 
+                  name="Maintenance Requests" 
+                  parent="menu_hotel_main" 
+                  action="action_hotel_maintenance_request_act_window" 
+                  sequence="30"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <!-- Analytics & Reporting Menu -->
+        <menuitem id="menu_hotel_analytics" 
+                  name="Analytics &amp; Reporting" 
+                  parent="menu_hotel_main" 
+                  sequence="40"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <!-- Hotel Configuration Menu -->
+        <menuitem id="menu_hotel_configuration" 
+                  name="Hotel Configuration" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_configuration_act_window" 
+                  sequence="5"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <!-- Amenity Categories Menu -->
+        <menuitem id="menu_hotel_amenity_category" 
+                  name="Amenity Categories" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_amenity_category_act_window" 
+                  sequence="10"
+                  groups="modulio_hotelcore.group_hotel_user"/>
 
         <!-- Hotel Floors Menu -->
         <menuitem id="menu_hotel_floor" 
                   name="Hotel Floors" 
                   parent="menu_hotel_config" 
                   action="action_hotel_floor_act_window" 
-                  sequence="10"
+                  sequence="15"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
         <!-- Room Types Menu -->
@@ -31,14 +70,13 @@
                   sequence="20"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
-        <!-- Rooms Menu -->
-        <menuitem id="menu_hotel_room" 
-                  name="Rooms" 
-                  parent="menu_hotel_main" 
-                  action="action_hotel_room_act_window" 
-                  sequence="20"
+        <!-- Hotel Amenities Menu -->
+        <menuitem id="menu_hotel_amenity" 
+                  name="Hotel Amenities" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_amenity_act_window" 
+                  sequence="25"
                   groups="modulio_hotelcore.group_hotel_user"/>
-
 
         <!-- Room Blocking Menu -->
         <menuitem id="menu_hotel_room_blocking" 
@@ -48,36 +86,20 @@
                   sequence="30"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
+        <!-- Maintenance Categories Menu -->
+        <menuitem id="menu_hotel_maintenance_category" 
+                  name="Maintenance Categories" 
+                  parent="menu_hotel_config" 
+                  action="action_hotel_maintenance_category_act_window" 
+                  sequence="35"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
         <!-- Room Status History Menu -->
         <menuitem id="menu_hotel_room_status_history" 
                   name="Room Status History" 
                   parent="menu_hotel_config" 
                   action="action_hotel_room_status_history_act_window" 
                   sequence="40"
-                  groups="modulio_hotelcore.group_hotel_user"/>
-
-        <!-- Hotel Configuration Menu -->
-        <menuitem id="menu_hotel_configuration" 
-                  name="Hotel Configuration" 
-                  parent="menu_hotel_config" 
-                  action="action_hotel_configuration_act_window" 
-                  sequence="5"
-                  groups="modulio_hotelcore.group_hotel_manager"/>
-
-        <!-- Amenity Categories Menu -->
-        <menuitem id="menu_hotel_amenity_category" 
-                  name="Amenity Categories" 
-                  parent="menu_hotel_config" 
-                  action="action_hotel_amenity_category_act_window" 
-                  sequence="15"
-                  groups="modulio_hotelcore.group_hotel_user"/>
-
-        <!-- Hotel Amenities Menu -->
-        <menuitem id="menu_hotel_amenity" 
-                  name="Hotel Amenities" 
-                  parent="menu_hotel_config" 
-                  action="action_hotel_amenity_act_window" 
-                  sequence="25"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
         <!-- Settings Shortcut -->
@@ -102,6 +124,42 @@
                   parent="menu_hotel_main" 
                   action="action_hotel_dashboard_client" 
                   sequence="1"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <!-- Analytics Menu Items -->
+        <menuitem id="menu_hotel_revenue_analytics" 
+                  name="Revenue Analytics" 
+                  parent="menu_hotel_analytics" 
+                  action="action_hotel_revenue_analytics" 
+                  sequence="10"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <menuitem id="menu_hotel_occupancy_analytics" 
+                  name="Occupancy Analytics" 
+                  parent="menu_hotel_analytics" 
+                  action="action_hotel_occupancy_analytics" 
+                  sequence="20"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <menuitem id="menu_hotel_performance_analytics" 
+                  name="Performance Analytics" 
+                  parent="menu_hotel_analytics" 
+                  action="action_hotel_performance_analytics" 
+                  sequence="30"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <menuitem id="menu_hotel_market_analytics" 
+                  name="Market Analytics" 
+                  parent="menu_hotel_analytics" 
+                  action="action_hotel_market_analytics" 
+                  sequence="40"
+                  groups="modulio_hotelcore.group_hotel_user"/>
+
+        <menuitem id="menu_hotel_room_type_analytics_dashboard" 
+                  name="Room Type Dashboard" 
+                  parent="menu_hotel_analytics" 
+                  action="action_hotel_room_type_analytics_dashboard" 
+                  sequence="50"
                   groups="modulio_hotelcore.group_hotel_user"/>
 
     </data>

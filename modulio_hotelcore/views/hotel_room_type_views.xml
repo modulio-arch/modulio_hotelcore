@@ -15,6 +15,12 @@
                     <field name="size_sqm"/>
                     <field name="base_price"/>
                     <field name="room_count"/>
+                    <field name="total_revenue"/>
+                    <field name="occupancy_rate"/>
+                    <field name="average_daily_rate"/>
+                    <field name="booking_count"/>
+                    <field name="is_premium" widget="boolean_toggle"/>
+                    <field name="is_suite" widget="boolean_toggle"/>
                 </list>
             </field>
         </record>
@@ -26,11 +32,19 @@
             <field name="arch" type="xml">
                 <form string="Room Type">
                     <header>
+                        <button name="action_refresh_analytics" type="object" string="Refresh Analytics" class="btn-primary"/>
+                        <button name="action_view_analytics" type="object" string="View Analytics" class="btn-secondary"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_rooms" type="object" class="oe_stat_button" icon="fa-bed">
                                 <field name="room_count" widget="statinfo" string="Rooms"/>
+                            </button>
+                            <button name="action_view_amenities" type="object" class="oe_stat_button" icon="fa-star">
+                                <field name="amenity_count" widget="statinfo" string="Amenities"/>
+                            </button>
+                            <button name="action_view_analytics" type="object" class="oe_stat_button" icon="fa-bar-chart">
+                                <field name="total_revenue" widget="statinfo" string="Revenue"/>
                             </button>
                         </div>
                         <div class="oe_title">
@@ -57,6 +71,122 @@
                             <field name="amenities" placeholder="List of amenities..."/>
                         </group>
                         <notebook>
+                            <page string="Basic Information" name="basic_info">
+                                <group>
+                                    <group>
+                                        <field name="code"/>
+                                        <field name="sequence"/>
+                                        <field name="max_occupancy"/>
+                                        <field name="size_sqm"/>
+                                    </group>
+                                    <group>
+                                        <field name="base_price"/>
+                                        <field name="currency_id"/>
+                                        <field name="is_premium"/>
+                                        <field name="is_suite"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="description" placeholder="Room type description..."/>
+                                </group>
+                                <group>
+                                    <field name="amenities" placeholder="List of amenities..."/>
+                                </group>
+                            </page>
+                            
+                            <page string="Advanced Features" name="advanced_features">
+                                <group>
+                                    <group>
+                                        <field name="is_connecting"/>
+                                        <field name="pet_friendly"/>
+                                        <field name="smoking_allowed"/>
+                                        <field name="wheelchair_accessible"/>
+                                    </group>
+                                    <group>
+                                        <field name="maintenance_frequency"/>
+                                        <field name="maintenance_cost_per_room"/>
+                                        <field name="analytics_period"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="amenity_ids" widget="many2many_tags"/>
+                                </group>
+                            </page>
+                            
+                            <page string="Revenue Analytics" name="revenue_analytics">
+                                <group>
+                                    <group>
+                                        <field name="total_revenue" readonly="1"/>
+                                        <field name="monthly_revenue" readonly="1"/>
+                                        <field name="daily_revenue" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="average_daily_rate" readonly="1"/>
+                                        <field name="revenue_per_available_room" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Occupancy Analytics" name="occupancy_analytics">
+                                <group>
+                                    <group>
+                                        <field name="occupancy_rate" readonly="1"/>
+                                        <field name="monthly_occupancy_rate" readonly="1"/>
+                                        <field name="total_nights_sold" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="monthly_nights_sold" readonly="1"/>
+                                        <field name="average_length_of_stay" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Performance Metrics" name="performance_metrics">
+                                <group>
+                                    <group>
+                                        <field name="booking_count" readonly="1"/>
+                                        <field name="monthly_booking_count" readonly="1"/>
+                                        <field name="cancellation_rate" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="no_show_rate" readonly="1"/>
+                                        <field name="customer_satisfaction_score" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Pricing Analytics" name="pricing_analytics">
+                                <group>
+                                    <group>
+                                        <field name="min_price" readonly="1"/>
+                                        <field name="max_price" readonly="1"/>
+                                        <field name="price_variance" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="seasonal_demand_factor" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Market Analytics" name="market_analytics">
+                                <group>
+                                    <group>
+                                        <field name="market_share" readonly="1"/>
+                                        <field name="competitive_index" readonly="1"/>
+                                        <field name="demand_forecast" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Maintenance Info" name="maintenance_info">
+                                <group>
+                                    <group>
+                                        <field name="last_maintenance_date" readonly="1"/>
+                                        <field name="maintenance_due" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
                             <page string="Rooms" name="rooms">
                                 <field name="room_ids">
                                     <list>
@@ -83,9 +213,20 @@
                     <field name="code"/>
                     <field name="max_occupancy"/>
                     <separator/>
+                    <filter string="Premium" name="premium" domain="[('is_premium', '=', True)]"/>
+                    <filter string="Suite" name="suite" domain="[('is_suite', '=', True)]"/>
+                    <filter string="Pet Friendly" name="pet_friendly" domain="[('pet_friendly', '=', True)]"/>
+                    <filter string="Wheelchair Accessible" name="wheelchair_accessible" domain="[('wheelchair_accessible', '=', True)]"/>
+                    <separator/>
+                    <filter string="High Revenue" name="high_revenue" domain="[('total_revenue', '>', 10000)]"/>
+                    <filter string="High Occupancy" name="high_occupancy" domain="[('occupancy_rate', '>', 80)]"/>
+                    <filter string="High Satisfaction" name="high_satisfaction" domain="[('customer_satisfaction_score', '>', 4)]"/>
                     <separator/>
                     <group expand="0" string="Group By">
                         <filter string="Max Occupancy" name="group_max_occupancy" context="{'group_by': 'max_occupancy'}"/>
+                        <filter string="Premium" name="group_premium" context="{'group_by': 'is_premium'}"/>
+                        <filter string="Suite" name="group_suite" context="{'group_by': 'is_suite'}"/>
+                        <filter string="Pet Friendly" name="group_pet_friendly" context="{'group_by': 'pet_friendly'}"/>
                     </group>
                 </search>
             </field>
@@ -102,6 +243,13 @@
                     <field name="max_occupancy"/>
                     <field name="base_price"/>
                     <field name="room_count"/>
+                    <field name="total_revenue"/>
+                    <field name="occupancy_rate"/>
+                    <field name="average_daily_rate"/>
+                    <field name="booking_count"/>
+                    <field name="is_premium"/>
+                    <field name="is_suite"/>
+                    <field name="customer_satisfaction_score"/>
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
@@ -129,9 +277,14 @@
                                         <div class="o_kanban_record_bottom">
                                             <div class="oe_kanban_bottom_left">
                                                 <span>Max: <field name="max_occupancy"/></span>
+                                                <span>Rooms: <field name="room_count"/></span>
+                                                <span t-if="record.is_premium.raw_value" class="badge badge-success">Premium</span>
+                                                <span t-if="record.is_suite.raw_value" class="badge badge-info">Suite</span>
                                             </div>
                                             <div class="oe_kanban_bottom_right">
-                                                <span>Rooms: <field name="room_count"/></span>
+                                                <span>Revenue: <field name="total_revenue"/></span>
+                                                <span>Occupancy: <field name="occupancy_rate"/>%</span>
+                                                <span>ADR: <field name="average_daily_rate"/></span>
                                             </div>
                                         </div>
                                     </div>
