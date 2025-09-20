@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Hotel Maintenance Category List View -->
+        <record id="view_hotel_maintenance_category_list" model="ir.ui.view">
+            <field name="name">hotel.maintenance.category.list</field>
+            <field name="model">hotel.maintenance.category</field>
+            <field name="arch" type="xml">
+                <list string="Maintenance Categories">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="maintenance_type" widget="badge"/>
+                    <field name="request_count"/>
+                    <field name="active_request_count"/>
+                    <field name="average_duration"/>
+                    <field name="total_cost"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Hotel Maintenance Category Form View -->
+        <record id="view_hotel_maintenance_category_form" model="ir.ui.view">
+            <field name="name">hotel.maintenance.category.form</field>
+            <field name="model">hotel.maintenance.category</field>
+            <field name="arch" type="xml">
+                <form string="Maintenance Category">
+                    <header>
+                        <button name="action_view_requests" type="object" string="View Requests" class="btn-primary"/>
+                        <button name="action_view_analytics" type="object" string="View Analytics" class="btn-secondary"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Enter category name..."/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="maintenance_type"/>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="response_time_hours"/>
+                                <field name="escalation_time_hours"/>
+                                <field name="default_priority"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="description"/>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Cost Information" name="cost_info">
+                                <group>
+                                    <group>
+                                        <field name="estimated_cost_range_min"/>
+                                        <field name="estimated_cost_range_max"/>
+                                        <field name="currency_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Skills &amp; Requirements" name="skills_requirements">
+                                <group>
+                                    <field name="required_skills"/>
+                                </group>
+                                <group>
+                                    <field name="required_certifications"/>
+                                </group>
+                                <group>
+                                    <field name="safety_requirements"/>
+                                </group>
+                            </page>
+                            
+                            <page string="Analytics" name="analytics">
+                                <group>
+                                    <group>
+                                        <field name="total_requests" readonly="1"/>
+                                        <field name="completed_requests" readonly="1"/>
+                                        <field name="average_duration" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="average_cost" readonly="1"/>
+                                        <field name="total_cost" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Hotel Maintenance Category Search View -->
+        <record id="view_hotel_maintenance_category_search" model="ir.ui.view">
+            <field name="name">hotel.maintenance.category.search</field>
+            <field name="model">hotel.maintenance.category</field>
+            <field name="arch" type="xml">
+                <search string="Maintenance Categories">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="maintenance_type"/>
+                    <separator/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <filter string="Room Maintenance" name="room" domain="[('maintenance_type', '=', 'room')]"/>
+                    <filter string="Amenity Maintenance" name="amenity" domain="[('maintenance_type', '=', 'amenity')]"/>
+                    <filter string="Floor Maintenance" name="floor" domain="[('maintenance_type', '=', 'floor')]"/>
+                    <filter string="General Maintenance" name="general" domain="[('maintenance_type', '=', 'general')]"/>
+                    <filter string="Emergency Maintenance" name="emergency" domain="[('maintenance_type', '=', 'emergency')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Maintenance Type" name="group_maintenance_type" context="{'group_by': 'maintenance_type'}"/>
+                        <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Hotel Maintenance Request List View -->
+        <record id="view_hotel_maintenance_request_list" model="ir.ui.view">
+            <field name="name">hotel.maintenance.request.list</field>
+            <field name="model">hotel.maintenance.request</field>
+            <field name="arch" type="xml">
+                <list string="Maintenance Requests">
+                    <field name="name"/>
+                    <field name="title"/>
+                    <field name="room_number"/>
+                    <field name="maintenance_type" widget="badge"/>
+                    <field name="category_id"/>
+                    <field name="priority" widget="badge"/>
+                    <field name="status" widget="badge"/>
+                    <field name="assigned_to"/>
+                    <field name="requested_date"/>
+                    <field name="scheduled_date"/>
+                    <field name="is_overdue" decoration-danger="is_overdue"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Hotel Maintenance Request Form View -->
+        <record id="view_hotel_maintenance_request_form" model="ir.ui.view">
+            <field name="name">hotel.maintenance.request.form</field>
+            <field name="model">hotel.maintenance.request</field>
+            <field name="arch" type="xml">
+                <form string="Maintenance Request">
+                    <header>
+                        <button name="action_submit" type="object" string="Submit" class="btn-primary" 
+                                invisible="status != 'draft'"/>
+                        <button name="action_start" type="object" string="Start" class="btn-success" 
+                                invisible="status != 'assigned'"/>
+                        <button name="action_complete" type="object" string="Complete" class="btn-primary" 
+                                invisible="status != 'in_progress'"/>
+                        <button name="action_cancel" type="object" string="Cancel" class="btn-danger" 
+                                invisible="status in ['completed', 'cancelled']"/>
+                        <button name="action_hold" type="object" string="Hold" class="btn-warning" 
+                                invisible="status not in ['assigned', 'in_progress']"/>
+                        <button name="action_resume" type="object" string="Resume" class="btn-info" 
+                                invisible="status != 'on_hold'"/>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,submitted,assigned,in_progress,completed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="title" placeholder="Enter maintenance request title..."/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="name" readonly="1"/>
+                                <field name="maintenance_type"/>
+                                <field name="category_id"/>
+                                <field name="priority"/>
+                            </group>
+                            <group>
+                                <field name="requested_by"/>
+                                <field name="assigned_to"/>
+                                <field name="department"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="description"/>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Related Objects" name="related_objects">
+                                <group>
+                                    <group>
+                                        <field name="room_id"/>
+                                        <field name="room_number" readonly="1"/>
+                                        <field name="floor_number" readonly="1"/>
+                                        <field name="room_type_id" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="amenity_id"/>
+                                        <field name="floor_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Scheduling" name="scheduling">
+                                <group>
+                                    <group>
+                                        <field name="requested_date"/>
+                                        <field name="scheduled_date"/>
+                                        <field name="estimated_duration"/>
+                                    </group>
+                                    <group>
+                                        <field name="start_date"/>
+                                        <field name="completion_date"/>
+                                        <field name="actual_duration" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Cost &amp; Resources" name="cost_resources">
+                                <group>
+                                    <group>
+                                        <field name="estimated_cost"/>
+                                        <field name="actual_cost"/>
+                                        <field name="currency_id"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="parts_required"/>
+                                    <field name="parts_ordered"/>
+                                    <field name="parts_received"/>
+                                </group>
+                            </page>
+                            
+                            <page string="Work Details" name="work_details">
+                                <group>
+                                    <field name="work_performed"/>
+                                </group>
+                                <group>
+                                    <field name="work_notes"/>
+                                </group>
+                                <group>
+                                    <field name="quality_check"/>
+                                    <field name="quality_notes"/>
+                                </group>
+                            </page>
+                            
+                            <page string="Resolution" name="resolution">
+                                <group>
+                                    <field name="resolution"/>
+                                </group>
+                                <group>
+                                    <field name="follow_up_required"/>
+                                    <field name="follow_up_date"/>
+                                    <field name="customer_satisfaction"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Hotel Maintenance Request Search View -->
+        <record id="view_hotel_maintenance_request_search" model="ir.ui.view">
+            <field name="name">hotel.maintenance.request.search</field>
+            <field name="model">hotel.maintenance.request</field>
+            <field name="arch" type="xml">
+                <search string="Maintenance Requests">
+                    <field name="name"/>
+                    <field name="title"/>
+                    <field name="room_number"/>
+                    <field name="category_id"/>
+                    <field name="assigned_to"/>
+                    <field name="requested_by"/>
+                    <separator/>
+                    <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
+                    <filter string="Submitted" name="submitted" domain="[('status', '=', 'submitted')]"/>
+                    <filter string="Assigned" name="assigned" domain="[('status', '=', 'assigned')]"/>
+                    <filter string="In Progress" name="in_progress" domain="[('status', '=', 'in_progress')]"/>
+                    <filter string="Completed" name="completed" domain="[('status', '=', 'completed')]"/>
+                    <filter string="Cancelled" name="cancelled" domain="[('status', '=', 'cancelled')]"/>
+                    <filter string="On Hold" name="on_hold" domain="[('status', '=', 'on_hold')]"/>
+                    <separator/>
+                    <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                    <filter string="My Requests" name="my_requests" domain="[('requested_by', '=', uid)]"/>
+                    <filter string="Assigned to Me" name="assigned_to_me" domain="[('assigned_to', '=', uid)]"/>
+                    <separator/>
+                    <filter string="Room Maintenance" name="room" domain="[('maintenance_type', '=', 'room')]"/>
+                    <filter string="Amenity Maintenance" name="amenity" domain="[('maintenance_type', '=', 'amenity')]"/>
+                    <filter string="Floor Maintenance" name="floor" domain="[('maintenance_type', '=', 'floor')]"/>
+                    <filter string="General Maintenance" name="general" domain="[('maintenance_type', '=', 'general')]"/>
+                    <filter string="Emergency Maintenance" name="emergency" domain="[('maintenance_type', '=', 'emergency')]"/>
+                    <separator/>
+                    <filter string="Very Low Priority" name="priority_1" domain="[('priority', '=', '1')]"/>
+                    <filter string="Low Priority" name="priority_2" domain="[('priority', '=', '2')]"/>
+                    <filter string="Medium Priority" name="priority_3" domain="[('priority', '=', '3')]"/>
+                    <filter string="High Priority" name="priority_4" domain="[('priority', '=', '4')]"/>
+                    <filter string="Critical Priority" name="priority_5" domain="[('priority', '=', '5')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                        <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
+                        <filter string="Maintenance Type" name="group_maintenance_type" context="{'group_by': 'maintenance_type'}"/>
+                        <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
+                        <filter string="Assigned To" name="group_assigned_to" context="{'group_by': 'assigned_to'}"/>
+                        <filter string="Requested By" name="group_requested_by" context="{'group_by': 'requested_by'}"/>
+                        <filter string="Requested Date" name="group_requested_date" context="{'group_by': 'requested_date:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Hotel Maintenance Request Kanban View -->
+        <record id="view_hotel_maintenance_request_kanban" model="ir.ui.view">
+            <field name="name">hotel.maintenance.request.kanban</field>
+            <field name="model">hotel.maintenance.request</field>
+            <field name="arch" type="xml">
+                <kanban string="Maintenance Requests">
+                    <field name="name"/>
+                    <field name="title"/>
+                    <field name="room_number"/>
+                    <field name="maintenance_type"/>
+                    <field name="category_id"/>
+                    <field name="priority"/>
+                    <field name="status"/>
+                    <field name="assigned_to"/>
+                    <field name="requested_date"/>
+                    <field name="scheduled_date"/>
+                    <field name="is_overdue"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="name"/>
+                                            </strong>
+                                            <div class="o_kanban_record_subtitle">
+                                                <field name="title"/>
+                                            </div>
+                                        </div>
+                                        <div class="o_dropdown_kanban dropdown">
+                                            <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" aria-label="Dropdown menu" title="Dropdown menu">
+                                                <span class="fa fa-ellipsis-v"/>
+                                            </a>
+                                            <div class="dropdown-menu" role="menu">
+                                                <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                                <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div class="o_kanban_record_bottom">
+                                            <div class="oe_kanban_bottom_left">
+                                                <span><field name="room_number"/></span>
+                                                <span><field name="maintenance_type" widget="badge"/></span>
+                                                <span><field name="priority" widget="badge"/></span>
+                                            </div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <span><field name="status" widget="badge"/></span>
+                                                <span t-if="record.is_overdue.raw_value" class="badge badge-danger">Overdue</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Hotel Maintenance Category Action -->
+        <record id="action_hotel_maintenance_category_act_window" model="ir.actions.act_window">
+            <field name="name">Maintenance Categories</field>
+            <field name="res_model">hotel.maintenance.category</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="search_view_id" ref="view_hotel_maintenance_category_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No maintenance categories found!
+                </p>
+                <p>
+                    Create maintenance categories to organize maintenance requests
+                    (e.g., Electrical, Plumbing, HVAC, etc.).
+                </p>
+            </field>
+        </record>
+
+        <!-- Hotel Maintenance Request Action -->
+        <record id="action_hotel_maintenance_request_act_window" model="ir.actions.act_window">
+            <field name="name">Maintenance Requests</field>
+            <field name="res_model">hotel.maintenance.request</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="search_view_id" ref="view_hotel_maintenance_request_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No maintenance requests found!
+                </p>
+                <p>
+                    Create maintenance requests to track and manage
+                    maintenance work in your hotel.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
